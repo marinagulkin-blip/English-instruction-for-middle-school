@@ -303,6 +303,9 @@ progress::-moz-progress-bar { background: #cfff73; }
 .result { background: radial-gradient(ellipse at 12% 0%, #3b2351 0, transparent 65%), var(--panel); }
 .result-icon { background: #302243; color: var(--lime); border: 1px solid #776183; }
 .form input { background: #17111f; border-color: #665174; }
+.profile-switcher { margin-bottom: 12px; }
+.profile-switcher h2 { margin-bottom: 10px; }
+.profile-switcher [aria-current="true"] { opacity: 1; border-color: #80659b; }
 .status { color: #e7ccff; }
 .status:empty { display: none; }
 .dictation-feature { --accent: #3a284e; border-color: #5e4674; background: linear-gradient(110deg, #251931, #2d1f3c); margin-block: 12px; }
@@ -1081,11 +1084,44 @@ document.addEventListener('click', event => {
 });
 </script>
   <script>const storageKey = 'wordquest-v1';
-const defaults = { name: '', phone: '', best: {}, total: 0, coins: 0, owned: [], equipped: '', round: null, dictation: { practice: null, test: null, best: null } };
-let data = { ...defaults };
+const profilePrefix = storageKey + ':profile:';
+const activeProfileStorage = storageKey + ':active-profile';
+const profilesInMemory = new Map();
+let storageFailed = false;
+let currentProfile = storageKey;
 try {
-  data = { ...defaults, ...JSON.parse(localStorage.getItem(storageKey) || '{}') };
-} catch { /* The app remains playable in memory. */ }
+  const remembered = localStorage.getItem(activeProfileStorage);
+  if (remembered?.startsWith(profilePrefix) && localStorage.getItem(remembered)) currentProfile = remembered;
+} catch {
+  storageFailed = true;
+}
+let data = readProfile(currentProfile);
+
+function freshProfile(name = '') {
+  return { name, phone: '', best: {}, total: 0, coins: 0, owned: [], equipped: '', round: null,
+    dictation: { practice: null, test: null, best: null } };
+}
+
+function readProfile(key, name = '') {
+  try {
+    const stored = localStorage.getItem(key);
+    if (stored) return { ...freshProfile(name), ...JSON.parse(stored) };
+  } catch {
+    storageFailed = true;
+  }
+  return profilesInMemory.get(key) || freshProfile(name);
+}
+
+function profileKeys() {
+  const keys = new Set([currentProfile, ...profilesInMemory.keys()]);
+  try {
+    for (let index = 0; index < localStorage.length; index++) {
+      const key = localStorage.key(index);
+      if (key === storageKey || key?.startsWith(profilePrefix)) keys.add(key);
+    }
+  } catch { /* Profiles already open are available in memory. */ }
+  return [...keys];
+}
 
 const main = document.querySelector('main');
 const allLessons = [...lessons, ...bookLessons, ...interestLessons];
@@ -1110,14 +1146,44 @@ let activeUnit = '';
 let activeInterest = '';
 let result = null;
 let notice = '';
-let storageFailed = false;
 
 function save() {
+  profilesInMemory.set(currentProfile, data);
   try {
-    localStorage.setItem(storageKey, JSON.stringify(data));
+    localStorage.setItem(currentProfile, JSON.stringify(data));
   } catch {
     storageFailed = true;
   }
+}
+
+function selectProfile(key, name = '') {
+  currentProfile = key;
+  data = readProfile(key, name);
+  active = null;
+  activeUnit = '';
+  activeInterest = '';
+  result = null;
+  profilesInMemory.set(key, data);
+  try {
+    if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(data));
+    localStorage.setItem(activeProfileStorage, key);
+  } catch {
+    storageFailed = true;
+  }
+  go('home');
+}
+
+function acceptProfileLink() {
+  const invite = new URLSearchParams(location.hash.slice(1));
+  const id = invite.get('profile');
+  const name = invite.get('name')?.trim().slice(0, 24);
+  if (!id || !/^[a-f0-9]{32}$/.test(id) || !name) return false;
+  selectProfile(profilePrefix + id, name);
+  // Consume the link so reloading after switching profiles keeps the current selection.
+  try {
+    history.replaceState(history.state, '', location.pathname + location.search);
+  } catch { /* The current profile is already open. */ }
+  return true;
 }
 
 function recommendation() {
@@ -1271,8 +1337,14 @@ function rewards() {
 }
 
 function settings() {
+  const keys = profileKeys();
+  const otherProfiles = keys.length > 1 ? '<section class="paper profile-switcher"><h2>בחירת פרופיל</h2><div class="mission-list">' +
+    keys.map(key => '<button type="button" class="mission" data-switch-profile="' + escapeHtml(key) + '"' +
+    (key === currentProfile ? ' aria-current="true" disabled' : '') + '><span><bdi>' +
+    escapeHtml(readProfile(key).name || 'הפרופיל המקורי') + '</bdi></span>' +
+    (key === currentProfile ? '<small>פתוח עכשיו</small>' : '') + '</button>').join('') + '</div></section>' : '';
   return '<div class="narrow">' + header('הפרופיל שלי', 'השם, ההתקדמות והמספר נשמרים בדפדפן הזה.') +
-    '<form class="paper form"><label>איך לקרוא לך?<input id="nickname" maxlength="24" autocomplete="off" placeholder="השם או הכינוי שלי" value="' + escapeHtml(data.name) + '"></label>' +
+    otherProfiles + '<form class="paper form"><label>איך לקרוא לך?<input id="nickname" maxlength="24" autocomplete="off" placeholder="השם או הכינוי שלי" value="' + escapeHtml(data.name) + '"></label>' +
     '<label>טלפון של ההורה לשיתוף בוואטסאפ (רשות)<input type="tel" id="phone" dir="ltr" autocomplete="off" placeholder="050-1234567" value="' +
     (data.phone ? '+' + escapeHtml(data.phone) : '') + '" aria-describedby="phone-help"></label><p id="phone-help" class="muted">אפשר להכניס מספר ישראלי או מספר עם קידומת בינלאומית. אחרי משימה מוצלחת תוכלי לפתוח הודעה ולשלוח אותה בוואטסאפ.</p>' +
     '<button class="action" type="submit">לשמור</button><p class="status" id="settings-status" role="status"></p></form></div>';
@@ -1430,6 +1502,7 @@ document.addEventListener('click', event => {
   if (!button || button.disabled) return;
   const flags = button.dataset;
   if (flags.nav) go(flags.nav);
+  else if (flags.switchProfile && profileKeys().includes(flags.switchProfile)) selectProfile(flags.switchProfile);
   else if (flags.world) go('learn', flags.world);
   else if (flags.bookUnit) go('bookUnit', flags.bookUnit);
   else if (flags.interest) go('interest', flags.interest);
@@ -1470,7 +1543,8 @@ main.addEventListener('submit', event => {
   status.textContent = storageFailed ? 'השינויים יחולו בזמן שהמסך פתוח.' : 'ההגדרות נשמרו.';
 });
 
-render();
+window.addEventListener('hashchange', acceptProfileLink);
+if (!acceptProfileLink()) render();
 </script>
 </body>
 </html>
