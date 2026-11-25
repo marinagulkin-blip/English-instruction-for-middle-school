@@ -205,6 +205,7 @@ progress::-moz-progress-bar { background: #8146e6; }
   --art-hero: url("stage.webp");
   --art-worlds: url("world-tiles.webp");
 }
+html { scroll-padding-block-end: calc(76px + env(safe-area-inset-bottom)); }
 body { background: radial-gradient(ellipse at 26% 0%, #251735 0, transparent 530px), var(--paper); }
 .topbar { background: #130e1af2; border-color: #392b45; }
 .top-inner { padding-block: 10px; }
@@ -305,6 +306,21 @@ progress::-moz-progress-bar { background: #cfff73; }
 .dictation-feature { --accent: #3a284e; border-color: #5e4674; background: linear-gradient(110deg, #251931, #2d1f3c); margin-block: 12px; }
 .dictation-feature .world-icon { color: #f0e0ff; border: 1px solid #604770; border-radius: 50%; }
 .dictation-feature p { color: #d6c7e1; }
+.featured-paths { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+.featured-paths .dictation-feature { margin: 0; }
+.book-feature { background: linear-gradient(110deg, #1e2533, #222034); border-color: #58627c; }
+.book-feature .action { background: #dce5ff; color: #222c44; }
+.book-grid { display: grid; gap: 9px; }
+.book-unit { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; min-height: 67px; text-align: start; border: 1px solid var(--line); border-radius: 13px; padding: 9px 11px; background: var(--panel); }
+.book-unit:hover { border-color: #aa8dc6; }
+.book-number { display: grid; place-items: center; color: var(--lime); background: #302240; border-radius: 9px; width: 36px; height: 36px; font-weight: 850; }
+.book-unit-label { display: grid; justify-items: start; gap: 3px; font-weight: 750; }
+.book-unit-label span + span, .book-count { color: var(--muted); font-size: .85rem; }
+.book-count { direction: ltr; white-space: nowrap; }
+.book-section { margin-top: 19px; }
+.book-section h2 { font-size: 1.25rem; margin-bottom: 9px; }
+.book-audio { margin-top: 17px; padding-block: 9px; }
+.book-audio a { display: inline-flex; align-items: center; }
 .dictation-table thead { background: #322340; color: #ead8ff; }
 .dictation-table tbody tr:nth-child(even) { background: #281e34; }
 .dictation-review-fields > div { background: #2a2035; }
@@ -316,6 +332,7 @@ progress::-moz-progress-bar { background: #cfff73; }
   .daily { min-height: 280px; }
   .daily-copy { max-width: 59%; padding: 21px; }
   .world-card { aspect-ratio: 1.32; }
+  .featured-paths { grid-template-columns: minmax(0, 1fr); gap: 8px; }
 }
 @media (max-width: 490px) {
   main { width: calc(100% - 26px); padding-top: 17px; }
@@ -587,6 +604,165 @@ const prizes = [
   {id: 'crystal', icon: '🔮', title: 'כדור מסתורי', cost: 90}
 ];
 </script>
+  <script>// Unit order and titles follow ECB's public Teacher's Guide. Audio pages refer to the Student's Book.
+const bookUnits = {
+  1: { title: 'Around the World', topic: 'מקומות ופסטיבלים', audioPages: '12–14, 22–23', lessons: ['simple', 'now', 'book-present', 'book-festival-words', 'book-festival-blog'] },
+  2: { title: 'Believe It or Not', topic: 'דברים שקשה להאמין להם', audioPages: '38–40, 48–49', lessons: ['last-frequency', 'station'] },
+  3: { title: 'True Heroes', topic: 'גבורה בחיי היום־יום', audioPages: '68–70, 78–79', lessons: ['book-heroes'] },
+  4: { title: 'Born to Be Free', topic: 'בעלי חיים בטבע', audioPages: '94–96, 104–105', lessons: ['book-free'] },
+  5: { title: 'Shopping Around', topic: 'בחירות בקניות', audioPages: '126–128, 136–137', lessons: ['book-shopping'] },
+  6: { title: 'Right or Wrong', topic: 'החלטות והוגנות', audioPages: '152–154, 162–163', lessons: ['book-decisions'] }
+};
+
+const bookLessons = [
+  {
+    id: 'book-present', world: 'grammar', title: 'הרגלים, רגשות וסידורים',
+    notes: [
+      ['usually / often', 'בדרך כלל שמים לפני הפועל הראשי. אחרי am, is או are הן באות אחריהם.',
+        ['They ', 'usually meet', ' before the show.'], ['The hall ', 'is often', ' full.']],
+      ['like / know / want', 'כשהפועל מתאר העדפה, ידע או רצון, בדרך כלל משתמשים בהווה פשוט.',
+        ['I ', 'prefer', ' the outdoor stage.']],
+      ['Present Progressive', 'אפשר להשתמש בהווה מתמשך גם לסידור שכבר נקבע לזמן קרוב.',
+        ['We ', 'are meeting', ' the band tomorrow.']]
+    ],
+    items: questions([
+      ['Which sentence is correct?', 'We usually arrive early.', 'We arrive usually early.', 'We usually arrives early.', 'המילה usually באה לפני arrive.', 'כותבים usually arrive.'],
+      ['Which sentence is correct?', 'The tent is often crowded.', 'The tent often crowded.', 'The tent are often crowded.', 'איפה שמים often כשיש is?', 'במשפט הזה כותבים is often crowded.'],
+      ['I ___ the name of this song.', 'know', 'am knowing', 'knows', 'ידיעה היא מצב. איזה זמן מתאים?', 'עם I כותבים know כשהכוונה היא לדעת משהו.'],
+      ['Nora ___ a seat near the front.', 'wants', 'is wanting', 'want', 'מדובר ברצון, והנושא הוא she.', 'עם she כותבים wants כדי לתאר את הרצון שלה.'],
+      ['The tickets are booked. We ___ the band tomorrow.', 'are meeting', 'is meeting', 'meeting', 'הפגישה כבר נקבעה. איזו צורה מתאימה ל־we?', 'משתמשים ב־are meeting כי זו פגישה שכבר נקבעה.'],
+      ['The sign is on the door, but I ___ it.', 'don’t understand', 'am not understanding', 'doesn’t understand', 'משתמשים בהווה פשוט כדי לתאר הבנה.', 'בשלילה עם I כותבים don’t ואז את צורת הבסיס.']
+    ])
+  },
+  {
+    id: 'book-festival-words', world: 'vocab', title: 'אוצר מילים של פסטיבל',
+    notes: [
+      ['annual festival', 'פסטיבל שנערך בכל שנה.', ['An ', 'annual festival', ' takes place here every May.']],
+      ['traditional dish', 'מנה שמכינים כחלק ממסורת מקומית.', ['We tried a ', 'traditional dish', ' at the festival.']]
+    ],
+    items: questions([
+      ['This is an ___ event. It happens once a year.', 'annual', 'soft', 'separate', 'Once a year פירושו פעם בשנה.', 'Annual פירושו שנתי.'],
+      ['The square was so ___ that we could hardly move.', 'crowded', 'calm', 'gentle', 'למה היה קשה לזוז בכיכר?', 'Crowded פירושו צפוף או הומה.'],
+      ['My aunt showed me how to cook a ___ from her village.', 'traditional dish', 'concert', 'handbag', 'חפשי דבר שאפשר לבשל.', 'Traditional dish היא מנה מסורתית.'],
+      ['Read the ___ before you walk to the festival.', 'directions', 'ingredients', 'percent', 'מה אפשר לקרוא כדי למצוא את הדרך?', 'Directions פירושו כאן הוראות הגעה.'],
+      ['The shop gives students a ___, so they pay less.', 'discount', 'century', 'collection', 'מה מוריד את המחיר?', 'Discount פירושו הנחה.'],
+      ['The event has a ___ of activities, from dance to cooking.', 'variety', 'factory', 'location', 'יש כמה סוגים שונים של פעילויות.', 'Variety פירושו מגוון.']
+    ])
+  },
+  {
+    id: 'book-festival-blog', world: 'reading', title: 'בלוג מהפסטיבל',
+    textTitle: 'A Night of Lights',
+    passage: [
+      'I planned to spend Saturday at home, but my cousin invited me to a festival by the river. We arrived early because the main square usually gets crowded after sunset.',
+      'At our first stop, a group of students was making lanterns from old magazines. I made a purple lantern. My cousin wanted to see the concert, but it was starting later, so we tried a traditional dish from the town.',
+      'We waited for the show beside the river. When the lights went on, our lanterns looked like stars. I want to bring my little sister next year. She loves making things from paper.'
+    ],
+    rule: 'חפשי למה הכותבת הגיעה מוקדם ולמה היא רוצה לחזור.',
+    items: questions([
+      ['Why did they arrive early?', 'The square usually gets crowded later.', 'They wanted to go home before sunset.', 'The concert had already started.', 'חפשי את המילה because בפסקה הראשונה.', 'הן הגיעו מוקדם כי הכיכר בדרך כלל נעשית צפופה אחרי השקיעה.'],
+      ['What did the students use to make lanterns?', 'Old magazines', 'Glass bottles', 'Purple shirts', 'חפשי מה בא אחרי from.', 'הסטודנטים הכינו עששיות ממגזינים ישנים.'],
+      ['What did they do before the concert?', 'They tried a local dish.', 'They went home.', 'They bought more lanterns.', 'ההופעה עוד לא התחילה. מה עשו בינתיים?', 'הן טעמו מנה מסורתית מקומית לפני ההופעה.'],
+      ['Why would the writer’s sister probably enjoy the festival?', 'She likes making things from paper.', 'She wants to play by the river.', 'She is a singer in the concert.', 'קראי את המשפט האחרון.', 'אחותה אוהבת ליצור דברים מנייר, כמו העששיות בפסטיבל.']
+    ])
+  },
+  {
+    id: 'book-heroes', world: 'reading', title: 'הגיבורה מאחורי הקלעים',
+    textTitle: 'The Spare Microphone',
+    passage: [
+      'Five minutes before the school concert, Maya dropped the lead singer’s microphone. It stopped working. She was scared to tell anyone because the whole band was waiting backstage.',
+      'Rin saw what happened. She told Maya to explain the problem to the teacher while she ran to the drama room for a spare microphone. When she came back, she helped Maya test it.',
+      'The concert started on time. The audience never saw Rin. Later, Maya thanked her for fixing the problem without blaming anyone.'
+    ],
+    rule: 'שימי לב איך רין עזרה לפני שההופעה התחילה.',
+    items: questions([
+      ['Why was Maya worried?', 'She had broken the microphone.', 'She had lost her ticket.', 'She had forgotten the song.', 'מה נפל בתחילת הסיפור?', 'המיקרופון נפל והפסיק לעבוד.'],
+      ['What did Rin ask Maya to do?', 'Tell the teacher what happened.', 'Run to the drama room.', 'Leave before the concert.', 'קראי את הפסקה השנייה.', 'רין ביקשה ממאיה להסביר למורה מה קרה.'],
+      ['What does “spare” mean in “a spare microphone”?', 'An extra one', 'A broken one', 'A very loud one', 'רין צריכה מיקרופון נוסף כי הראשון התקלקל.', 'Spare פירושו רזרבי או נוסף.'],
+      ['What is the main idea?', 'Helping quietly can be heroic.', 'Only the singer can save a concert.', 'The audience should know every mistake.', 'הקהל לא ראה את רין, ובכל זאת היא עזרה.', 'רין עזרה מאחורי הקלעים בלי לחפש תשומת לב.']
+    ])
+  },
+  {
+    id: 'book-free', world: 'reading', title: 'הינשוף חוזר ליער',
+    textTitle: 'Back to the Forest',
+    passage: [
+      'Last spring, a wildlife team found a young owl with an injured wing. They moved it to a place where it could recover safely. At first, the owl could only move a short distance.',
+      'The team checked the owl each week. One day, it flew across the whole room and landed on a high branch. The team decided to release it near the place where they had found it.',
+      'At sunset they opened the box. The owl waited for a moment, then flew into the trees. A young volunteer stayed quiet so she would not frighten it.'
+    ],
+    rule: 'עקבי אחרי מה שקרה לינשוף מהפציעה ועד החזרה ליער.',
+    items: questions([
+      ['Why did the team take the owl away at first?', 'It needed time to heal.', 'They wanted it to live with a family.', 'It had lost its food.', 'קראי מה קרה לכנף.', 'הכנף הייתה פצועה והינשוף נזקק למקום בטוח להחלמה.'],
+      ['What showed the owl was getting stronger?', 'It could fly across the room.', 'It stayed inside the box.', 'It ate a larger meal.', 'מה הינשוף הצליח לעשות בפסקה השנייה?', 'הינשוף הצליח לעוף לאורך החדר ולנחות על ענף גבוה.'],
+      ['What does “release” mean in the story?', 'Let the owl go free', 'Teach the owl a trick', 'Move the owl into another room', 'מה הצוות עשה כשהוא פתח את הארגז?', 'Release פירושו לשחרר.'],
+      ['Why did the volunteer stay quiet?', 'She did not want to scare the owl.', 'She could not see the owl.', 'She was waiting for a phone call.', 'חפשי את המילה frighten.', 'היא נשארה בשקט כדי לא להבהיל את הינשוף.']
+    ])
+  },
+  {
+    id: 'book-shopping', world: 'reading', title: 'מה באמת משתלם?',
+    textTitle: 'A Better Buy',
+    passage: [
+      'Lina needed headphones for dance practice. One store had a pair for 70 shekels. Another store had a pair for 90 shekels, with a case included. Lina already had a case at home.',
+      'Before buying anything, she tried both pairs. The cheaper pair felt comfortable and stayed in place when she moved. She asked if she could return them within a week if they did not work. The shop assistant said yes, as long as she kept the receipt.',
+      'Lina chose the cheaper pair and put the receipt in her bag.'
+    ],
+    rule: 'חפשי גם מחירים וגם סיבות שבגללן לינה בחרה.',
+    items: questions([
+      ['Why did Lina need headphones?', 'For dance practice', 'As a gift for a friend', 'For a long train ride', 'קראי את המשפט הראשון.', 'היא הייתה צריכה אוזניות לחזרות ריקוד.'],
+      ['Why was the case less important to Lina?', 'She already had one.', 'She did not like its color.', 'It was too small for her bag.', 'מה כבר היה לה בבית?', 'כבר היה לה נרתיק בבית.'],
+      ['What did the assistant say she needed to keep?', 'The receipt', 'The case', 'The price sign', 'חפשי את התנאי שהמוכר נתן.', 'כדי להחזיר את האוזניות היא צריכה לשמור על הקבלה.'],
+      ['What does “comfortable” tell us about the cheaper pair?', 'They felt good when she wore them.', 'They were hard to carry.', 'They cost more than expected.', 'לינה בדקה איך האוזניות מרגישות בזמן תנועה.', 'Comfortable פירושו נוח.']
+    ])
+  },
+  {
+    id: 'book-decisions', world: 'reading', title: 'נקודה שלא הגיעה לנו',
+    textTitle: 'The Extra Point',
+    passage: [
+      'At a school quiz, Team Violet was one point ahead. Tali noticed that the scorekeeper had added a point for an answer that her team got wrong.',
+      'One teammate wanted to stay quiet. “It wasn’t our mistake,” he said. Tali thought about how she would feel if the same thing happened to the other team. She told the scorekeeper, and both teams finished with the same score.',
+      'The teacher gave both teams one last question. Team Violet lost, but their captain thanked Tali for giving everyone a fair chance.'
+    ],
+    rule: 'שימי לב מה טלי בחרה לעשות ולמה.',
+    items: questions([
+      ['What mistake did Tali notice?', 'Her team got an extra point.', 'The teacher left out a question.', 'The other team copied an answer.', 'מה קרה לניקוד של הקבוצה?', 'לקבוצה הוסיפו נקודה על תשובה שגויה.'],
+      ['What did the teammate suggest?', 'Say nothing about the mistake.', 'Ask for a new question immediately.', 'Give both teams extra points.', 'מה פירוש stay quiet בהקשר הזה?', 'הוא הציע לשתוק לגבי הטעות.'],
+      ['What happened just after the score was corrected?', 'Both teams had the same score.', 'Team Violet won the quiz.', 'The quiz was cancelled.', 'קראי מה קרה לפני השאלה האחרונה.', 'אחרי התיקון הניקוד היה שווה.'],
+      ['Why did the captain thank Tali?', 'She helped make the game fair.', 'She won the last point.', 'She made the quiz shorter.', 'חפשי את הביטוי fair chance בפסקה האחרונה.', 'היא עזרה לתת לשתי הקבוצות הזדמנות הוגנת.']
+    ])
+  }
+];
+
+const publisherAudio = 'https://www.ecb.co.il/new-directions-2/';
+
+function bookShortcut() {
+  return '<section class="dictation-feature book-feature"><span class="world-icon" aria-hidden="true">▤</span>' +
+    '<div><h2>' + english('New Directions') + '</h2><p>תרגול לפי יחידות הספר</p></div>' +
+    action('לבחירת יחידה', 'data-nav="book"') + '</section>';
+}
+
+function book() {
+  return '<div class="narrow">' + header(english('New Directions'), 'בחרי את היחידה שאת לומדת בכיתה.') +
+    '<div class="book-grid">' + Object.entries(bookUnits).map(([number, unit]) => {
+      const count = unit.lessons.filter(id => cleared(lessonById[id])).length;
+      return '<button class="book-unit" type="button" data-book-unit="' + number + '"><span class="book-number">' + number +
+        '</span><span class="book-unit-label">' + english(unit.title) + '<span>' + unit.topic + '</span></span><span class="book-count" aria-label="' +
+        count + ' מתוך ' + unit.lessons.length + ' משימות שעברת">' + count + '/' + unit.lessons.length + '</span></button>';
+    }).join('') + '</div>' + dictationShortcut() + '</div>';
+}
+
+function bookUnit() {
+  const unit = bookUnits[filter];
+  const tasks = unit.lessons.map(id => lessonById[id]);
+  const grammar = tasks.filter(lesson => lesson.world === 'grammar');
+  const practice = tasks.filter(lesson => lesson.world !== 'grammar');
+  return '<div class="narrow"><button class="link-button arrowless" type="button" data-nav="book">כל יחידות הספר</button>' +
+    header(english(unit.title), 'יחידה ' + filter + ' · ' + unit.topic) +
+    (grammar.length ? '<section class="book-section"><h2>הדקדוק של היחידה</h2>' + missionList(grammar, filter) + '</section>' : '') +
+    '<section class="book-section"><h2>' + (filter === '1' ? 'מילים וקריאה' : 'תרגול לפי נושא היחידה') +
+    '</h2>' + missionList(practice, filter) + '</section>' +
+    '<details class="paper book-audio"><summary>הקלטות הקריאה של הספר</summary><p class="muted">עמודים ' +
+    '<bdi dir="ltr">' + unit.audioPages + '</bdi></p><a class="link-button" href="' + publisherAudio + '" target="_blank" rel="noopener noreferrer">להקלטות באתר ההוצאה</a></details></div>';
+}
+</script>
   <script>const dictationVerbs = [
   ['catch', 'caught', 'לתפוס', ['לתפוס', 'לקלוט']],
   ['bring', 'brought', 'להביא', ['להביא']],
@@ -822,7 +998,8 @@ try {
 } catch { /* The app remains playable in memory. */ }
 
 const main = document.querySelector('main');
-const lessonById = Object.fromEntries(lessons.map(lesson => [lesson.id, lesson]));
+const allLessons = [...lessons, ...bookLessons];
+const lessonById = Object.fromEntries(allLessons.map(lesson => [lesson.id, lesson]));
 const recommendationOrder = ['be', 'verb-past', 'simple', 'midnight-rehearsal', 'now', 'stage-words', 'last-frequency', 'past', 'station', 'verb-three', 'future', 'backstage', 'quest-words', 'arcade'];
 const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 const action = (label, attrs, style = '') => '<button type="button" class="action ' + style + '" ' + attrs + '>' + label + '</button>';
@@ -832,11 +1009,13 @@ const mixedText = content => content
   .map((part, index) => index % 2 ? english(part) : escapeHtml(part)).join('');
 const passMark = lesson => Math.ceil(lesson.items.length * 0.6);
 const cleared = lesson => (data.best[lesson.id] ?? -1) >= passMark(lesson);
-const completed = () => lessons.filter(cleared).length;
+const completed = () => allLessons.filter(cleared).length;
+const lessonLink = (lesson, unit = '') => 'data-lesson="' + lesson.id + '"' + (unit ? ' data-lesson-unit="' + unit + '"' : '');
 const choiceOrder = [0, 1, 2];
 let page = 'home';
 let filter = '';
 let active = null;
+let activeUnit = '';
 let result = null;
 let notice = '';
 let storageFailed = false;
@@ -862,7 +1041,7 @@ function header(title, copy) {
 function stats() {
   return '<div class="stats">' + [
     ['⚡', data.total, 'נקודות שנצברו'],
-    ['✓', completed() + '/' + lessons.length, 'משימות שעברתי'],
+    ['✓', completed() + '/' + allLessons.length, 'משימות שעברתי'],
     ['✧', data.owned.length, 'פריטים שאספתי']
   ].map(([icon, value, label]) => '<div class="stat"><span aria-hidden="true">' + icon + '</span><div><b>' + value + '</b><small>' + label + '</small></div></div>').join('') + '</div>';
 }
@@ -881,14 +1060,14 @@ function home() {
     '<section class="daily"><div class="hero-art" aria-hidden="true"></div><div class="daily-copy"><span class="eyebrow"><span aria-hidden="true">✦</span>' + (resume ? 'משימה פתוחה' : 'מומלץ לך') + '</span>' +
     '<h2>' + mixedText(lesson.title) + '</h2>' +
     action(resume ? 'להמשיך במשימה' : 'מתחילות לשחק', 'data-lesson="' + lesson.id + '"', 'luminous') +
-    '</div></section>' + dictationShortcut() +
+    '</div></section><div class="featured-paths">' + bookShortcut() + dictationShortcut() + '</div>' +
     '<section class="section"><div class="section-header"><h2>באיזה עולם משחקות?</h2></div>' + worldCards() + '</section>';
 }
 
-function missionList(group) {
+function missionList(group, unit = '') {
   return '<div class="mission-list">' + group.map(lesson => {
     const status = data.round?.id === lesson.id ? 'להמשיך' : cleared(lesson) ? '✓ עברת' : lesson.items.length + ' שאלות';
-    return '<button type="button" class="mission" data-lesson="' + lesson.id + '"><span>' + mixedText(lesson.title) + '</span><small>' + status + '</small><span class="mission-play" aria-hidden="true">◂</span></button>';
+    return '<button type="button" class="mission" ' + lessonLink(lesson, unit) + '><span>' + mixedText(lesson.title) + '</span><small>' + status + '</small><span class="mission-play" aria-hidden="true">◂</span></button>';
   }).join('') + '</div>';
 }
 
@@ -899,7 +1078,7 @@ function learn() {
       '<div class="world-header ' + world.theme + '"><div class="world-art art-' + filter + '" aria-hidden="true"></div><h1>' + world.name + '</h1></div>' +
       (filter === 'verbs' ? dictationShortcut() : '') + missionList(lessons.filter(lesson => lesson.world === filter)) + '</div>';
   }
-  return header('בחרי עולם', '') + worldCards() + dictationShortcut();
+  return header('בחרי עולם', '') + worldCards() + '<div class="featured-paths">' + bookShortcut() + dictationShortcut() + '</div>';
 }
 
 function passage(lesson, collapsible) {
@@ -920,11 +1099,12 @@ function rule(lesson) {
 }
 
 function briefing() {
+  const backLink = activeUnit ? 'data-book-unit="' + activeUnit + '"' : 'data-world="' + active.world + '"';
   return '<div class="narrow"><div class="lesson-heading"><div class="world-art art-' + active.world +
     '" aria-hidden="true"></div>' + header(mixedText(active.title), '') + '</div><section class="paper lesson-briefing">' +
     (active.passage ? passage(active, false) : '<h2>' + (active.world === 'vocab' ? 'מילה לדוגמה' : 'כללים ודוגמאות') + '</h2>' + rule(active)) +
-    '<div class="action-row">' + action('לתרגול', 'data-begin') + '<button type="button" class="link-button" data-world="' +
-    active.world + '">חזרה למשימות</button></div></section></div>';
+    '<div class="action-row">' + action('לתרגול', 'data-begin') + '<button type="button" class="link-button" ' +
+    backLink + '>' + (activeUnit ? 'חזרה ליחידה' : 'חזרה למשימות') + '</button></div></section></div>';
 }
 
 function quiz() {
@@ -953,6 +1133,9 @@ function quiz() {
 function finishView() {
   const success = result.score >= passMark(active);
   const suggested = recommendation();
+  const nextAction = activeUnit ? action('חזרה ליחידה', 'data-book-unit="' + activeUnit + '"', 'secondary') :
+    action(suggested.id === active.id ? 'לכל המשימות' : 'למשימה המומלצת',
+      suggested.id === active.id ? 'data-nav="learn"' : lessonLink(suggested), success ? 'secondary' : '');
   return '<div class="narrow paper result"><span class="result-icon" aria-hidden="true">' + (success ? '🏆' : '✦') + '</span>' +
     '<h1>' + (success ? 'משימה עברה!' : 'סיימת את התרגול!') + '</h1><p><strong>' + mixedText(active.title) +
     '</strong> · ' + result.score + ' מתוך ' + active.items.length + ' תשובות נכונות בניסיון הראשון.</p><p>' +
@@ -960,9 +1143,7 @@ function finishView() {
       'שיפור השיא האישי יוסיף נקודות לאוסף שלך.') + '</p>' +
     '<div class="action-row">' + (success ? action('לשתף את ההצלחה', 'data-share') +
       (data.phone ? action('לשלוח בוואטסאפ להורה', 'data-whatsapp', 'secondary') : '') : '') +
-    action('לשחק שוב', 'data-lesson="' + active.id + '"', 'plain') +
-    action(suggested.id === active.id ? 'לכל המשימות' : 'למשימה המומלצת',
-      suggested.id === active.id ? 'data-nav="learn"' : 'data-lesson="' + suggested.id + '"', success ? 'secondary' : '') +
+    action('לשחק שוב', lessonLink(active, activeUnit), 'plain') + nextAction +
     '</div><p class="status" id="share-status" role="status"></p></div>';
 }
 
@@ -971,7 +1152,7 @@ function progressView() {
     (data.dictation.best === null ? '' : '<section class="section paper"><div class="section-header"><h2>מבחן ההכתבה</h2>' +
       action('לתרגל שוב', 'data-nav="dictation"', 'secondary') + '</div><p>השיא שלי: ' + data.dictation.best + ' מתוך 10 פעלים מלאים.</p></section>') +
     '<section class="section paper"><div class="section-header"><h2>שיאים אישיים</h2></div>' +
-    (Object.keys(data.best).length ? '<div class="mission-list">' + lessons.filter(lesson => data.best[lesson.id] !== undefined).map(lesson =>
+    (Object.keys(data.best).length ? '<div class="mission-list">' + allLessons.filter(lesson => data.best[lesson.id] !== undefined).map(lesson =>
       '<button type="button" class="mission" data-lesson="' + lesson.id + '"><span>' + mixedText(lesson.title) + '</span><small>' +
       data.best[lesson.id] + ' / ' + lesson.items.length + '</small></button>').join('') + '</div>'
       : '<p class="muted">כשתסיימי משימה, השיא הראשון שלך יופיע כאן.</p>') + '</section>';
@@ -998,7 +1179,7 @@ function settings() {
     '<button class="action" type="submit">לשמור</button><p class="status" id="settings-status" role="status"></p></form></div>';
 }
 
-const views = {home, learn, briefing, quiz, result: finishView, progress: progressView, rewards, settings,
+const views = {home, learn, book, bookUnit, briefing, quiz, result: finishView, progress: progressView, rewards, settings,
   dictation: dictationHub, dictationRound: dictationRoundView, dictationResult: dictationResultView};
 
 function render(focus = '') {
@@ -1006,7 +1187,7 @@ function render(focus = '') {
   document.getElementById('balance').textContent = data.coins;
   document.getElementById('avatar').textContent = prizes.find(prize => prize.id === data.equipped)?.icon || '🎧';
   document.querySelectorAll('.navigation button').forEach(button => {
-    const selected = button.dataset.nav === page || (['briefing', 'quiz', 'result', 'dictation', 'dictationRound', 'dictationResult'].includes(page) && button.dataset.nav === 'learn');
+    const selected = button.dataset.nav === page || (['book', 'bookUnit', 'briefing', 'quiz', 'result', 'dictation', 'dictationRound', 'dictationResult'].includes(page) && button.dataset.nav === 'learn');
     if (selected) button.setAttribute('aria-current', 'page');
     else button.removeAttribute('aria-current');
   });
@@ -1024,9 +1205,16 @@ function go(destination, world = '') {
   main.focus({ preventScroll: true });
 }
 
-function enter(lesson) {
+function enter(lesson, unit = '') {
   active = lesson;
-  if (data.round?.id === lesson.id) {
+  const savedRound = data.round?.id === lesson.id ? data.round : null;
+  const bookOrigin = bookLessons.includes(lesson) ? Object.keys(bookUnits).find(key => bookUnits[key].lessons.includes(lesson.id)) : '';
+  activeUnit = unit || savedRound?.unit || bookOrigin;
+  if (savedRound) {
+    if (activeUnit !== (savedRound.unit || '')) {
+      savedRound.unit = activeUnit;
+      save();
+    }
     go('quiz');
     return;
   }
@@ -1037,7 +1225,7 @@ function begin() {
   if (data.round && data.round.id !== active.id &&
     !window.confirm('יש משימה פתוחה. להתחיל משימה חדשה ולוותר על הסיבוב הפתוח?')) return;
   data.round = {
-    id: active.id, index: 0, score: 0, wrong: [], solved: false, hint: false,
+    id: active.id, unit: activeUnit, index: 0, score: 0, wrong: [], solved: false, hint: false,
     orders: active.items.map(() => {
       const order = [...choiceOrder];
       for (let index = order.length - 1; index > 0; index--) {
@@ -1140,7 +1328,8 @@ document.addEventListener('click', event => {
   const flags = button.dataset;
   if (flags.nav) go(flags.nav);
   else if (flags.world) go('learn', flags.world);
-  else if (flags.lesson) enter(lessonById[flags.lesson]);
+  else if (flags.bookUnit) go('bookUnit', flags.bookUnit);
+  else if (flags.lesson) enter(lessonById[flags.lesson], flags.lessonUnit);
   else if ('begin' in flags) begin();
   else if ('choice' in flags) choose(Number(flags.choice));
   else if ('next' in flags) advance();
