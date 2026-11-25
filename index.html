@@ -105,9 +105,9 @@ p { line-height: 1.55; }
 .world-block { margin-top: 21px; }
 .world-block h2 { display: flex; align-items: center; gap: 9px; margin-bottom: 9px; }
 .world-block p { margin-bottom: 9px; }
-.rule, .passage, .answer-feedback { margin-top: 13px; border-radius: 13px; background: #f4eeff; padding: 12px 14px; line-height: 1.5; }
+.passage, .answer-feedback { margin-top: 13px; border-radius: 13px; background: #f4eeff; padding: 12px 14px; line-height: 1.5; }
 details summary { min-height: 31px; font-weight: 800; line-height: 1.45; }
-.rule p, .passage p { margin-top: 6px; }
+.passage p { margin-top: 6px; }
 .passage { background: #eef3ff; }
 .passage p[lang="en"] { line-height: 1.62; text-align: left; }
 .quiz-meta { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 8px; font-weight: 750; color: var(--muted); }
@@ -248,6 +248,7 @@ h1, h2, h3 { letter-spacing: -.036em; }
 .world-header .world-art, .lesson-heading .world-art { width: 82px; height: 82px; flex: 0 0 auto; border-radius: 13px; border: 1px solid var(--line); }
 .world-header h1, .lesson-heading h1 { font-size: clamp(1.7rem, 4.5vw, 2.65rem); }
 .lesson-heading .page-head { margin: 0; }
+.page-head h1 [lang="en"], .daily h2 [lang="en"] { display: inline-block; white-space: nowrap; }
 .stat, .paper, .mission { background: var(--panel); border-color: var(--line); }
 .stat span:first-child, .prize-icon, .prize:nth-child(2n) .prize-icon { background: #38264b; }
 .paper { border-radius: 18px; }
@@ -264,9 +265,20 @@ h1, h2, h3 { letter-spacing: -.036em; }
 .link-button { color: #dec5ff; padding-inline: 5px; }
 .mission { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; border-radius: 12px; }
 .mission-play { color: var(--lime); }
-.rule, .passage { background: #2a2035; }
 .passage { background: #251d34; border-inline-start: 2px solid #b899ea; }
 .passage h2 { font-size: 1.26rem; }
+.lesson-briefing > .passage { margin-top: 0; }
+.story-text { margin-top: 10px; }
+.story-text p + p { margin-top: 14px; }
+.rule-list { display: grid; gap: 9px; list-style: none; margin: 13px 0 0; padding: 0; }
+.rule-list > li { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 10px 18px; align-items: center; background: #251b30; border: 1px solid #4c3a5d; border-radius: 12px; padding: 11px 13px; }
+.rule-usage p { margin-top: 5px; line-height: 1.4; }
+.rule-term { display: inline-block; padding: 2px 8px; border-radius: 7px; color: #ebd8ff; background: #3a2950; font-size: .98rem; font-weight: 800; max-width: 100%; overflow-wrap: anywhere; }
+.rule-examples { color: #f8f5fc; background: #171022; border-radius: 8px; padding: 6px 10px; text-align: left; }
+.rule-examples p { line-height: 1.42; }
+.rule-examples p + p { margin-top: 3px; }
+.rule-examples mark { color: var(--lime); background: transparent; font-weight: 800; }
+.reading-tip { background: #251b30; border-radius: 8px; margin-top: 6px; padding: 8px 10px; }
 .quiz-card { background: linear-gradient(150deg, #241a30 0%, var(--panel) 62%); }
 progress { background: #392b47; }
 progress::-webkit-progress-bar { background: #392b47; }
@@ -282,7 +294,8 @@ progress::-moz-progress-bar { background: #cfff73; }
 .answer-feedback { background: #3b2b4f; }
 .quiz-tools { display: flex; flex-wrap: wrap; align-items: start; gap: 6px 14px; margin-top: 10px; }
 .quiz-tools details[open] { width: 100%; }
-.quiz-tools details { margin-top: 8px; }
+.quiz-tools details { margin-top: 0; }
+.quiz-tools summary { min-height: 44px; padding: 10px 4px; }
 .quiz-tools .link-button { min-width: 70px; }
 .result { background: radial-gradient(ellipse at 12% 0%, #3b2351 0, transparent 65%), var(--panel); }
 .result-icon { background: #302243; color: var(--lime); border: 1px solid #776183; }
@@ -316,6 +329,7 @@ progress::-moz-progress-bar { background: #cfff73; }
   .world-card { padding: 10px; }
   .world-card .world-art { bottom: 8%; }
   .world-header .world-art, .lesson-heading .world-art { width: 65px; height: 65px; }
+  .rule-list > li { grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 8px 10px; }
   .dictation-feature { gap: 8px; padding: 9px; }
   .dictation-feature .action { padding-inline: 11px; }
 }
@@ -363,21 +377,27 @@ function questions(rows) {
 
 const lessons = [
   {
-    id: 'be', world: 'grammar', title: 'מתי אומרים am, is או are?',
-    rule: 'עם I משתמשים ב־am. עם he, she, it או שם עצם ביחיד משתמשים ב־is. עם you, we, they או שם עצם ברבים משתמשים ב־are.',
-    example: 'I am ready. The room is dark. The lights are blue.',
+    id: 'be', world: 'grammar', title: 'בחירה בין am / is / are',
+    notes: [
+      ['am', 'רק עם I', ['I ', 'am', ' ready.']],
+      ['is', 'עם he, she, it או שם עצם ביחיד', ['The room ', 'is', ' dark.']],
+      ['are', 'עם you, we, they או שם עצם ברבים', ['The lights ', 'are', ' blue.']]
+    ],
     items: questions([
-      ['The lights ___ purple.', 'are', 'am', 'is', 'כמה אורות יש במשפט?', 'Lights היא מילה ברבים, ולכן משתמשים ב־are.'],
-      ['My avatar ___ ready.', 'is', 'are', 'am', 'אפשר להחליף את my avatar במילה it.', 'Avatar אחד הוא יחיד. עם it משתמשים ב־is.'],
-      ['I ___ excited for the show.', 'am', 'is', 'are', 'עם I יש צורה משלו של הפועל be.', 'עם I תמיד משתמשים ב־am בהווה.'],
-      ['___ you in my team?', 'Are', 'Is', 'Am', 'חשבי איך אומרים You ___ in my team.', 'עם you משתמשים ב־are. בשאלה מעבירים אותו להתחלה.'],
-      ['The music ___ not too loud.', 'is', 'are', 'am', 'Music מקבלת צורה של יחיד.', 'Music מקבלת is. את not מוסיפים אחריו כדי ליצור שלילה.']
+      ['The lights ___ purple.', 'are', 'am', 'is', 'מדובר באור אחד או בכמה אורות?', 'כמה אורות הם רבים. לכן כותבים are.'],
+      ['My avatar ___ ready.', 'is', 'are', 'am', 'מדובר בדמות אחת.', 'עם דמות אחת כותבים is.'],
+      ['I ___ excited for the show.', 'am', 'is', 'are', 'בחרי את הצורה שמתאימה ל־I.', 'עם I כותבים am.'],
+      ['___ you in my team?', 'Are', 'Is', 'Am', 'מה מתאים ל־you?', 'עם you משתמשים ב־are. בשאלה הוא בא בהתחלה.'],
+      ['The music ___ not too loud.', 'is', 'are', 'am', 'המילה music מתנהגת כמו שם עצם ביחיד.', 'המילה music מקבלת is גם במשפט שלילה.']
     ])
   },
   {
     id: 'simple', world: 'grammar', title: 'הרגלים ב־Present Simple',
-    rule: 'משתמשים בזמן הזה להרגלים ולעובדות. עם he, she, it מוסיפים בדרך כלל s לפועל. בשאלה או בשלילה עם does מחזירים את הפועל לצורת הבסיס.',
-    example: 'She plays every day. Does she play on Fridays?',
+    notes: [
+      ['Present Simple', 'להרגלים ולעובדות. עם I, you, we, they כותבים את צורת הבסיס.', ['They ', 'play', ' every day.']],
+      ['verb + s', 'עם he, she, it בדרך כלל מוסיפים s לפועל.', ['She ', 'plays', ' every day.']],
+      ['does / doesn’t', 'בשאלה או בשלילה עם he, she, it חוזרים לצורת הבסיס.', ['Does she ', 'play', ' on Fridays?'], ['She doesn’t ', 'play', ' on Sundays.']]
+    ],
     items: questions([
       ['Nora ___ music every morning.', 'plays', 'play', 'is playing', 'Every morning רומז על הרגל. Nora היא she.', 'עם she מוסיפים כאן s לפועל בשגרת יום.'],
       ['My friends ___ after school on Mondays.', 'meet', 'meets', 'meeting', 'Friends הם רבים.', 'עם they משתמשים בצורת הבסיס meet.'],
@@ -388,8 +408,10 @@ const lessons = [
   },
   {
     id: 'now', world: 'grammar', title: 'עכשיו או בדרך כלל?',
-    rule: 'הרגלים מקבלים Present Simple. פעולה שמתרחשת עכשיו מקבלת Present Progressive, כלומר am, is או are, ואז פועל עם ing.',
-    example: 'I practice on Mondays. I am practicing right now.',
+    notes: [
+      ['Present Simple', 'משהו שקורה בדרך כלל.', ['I ', 'practice', ' on Mondays.']],
+      ['Present Progressive', 'משהו שקורה עכשיו. בוחרים am, is או are ומוסיפים פועל שמסתיים ב־ing.', ['I ', 'am practicing', ' right now.']]
+    ],
     items: questions([
       ['Look! The dancers ___ onto the stage.', 'are walking', 'walks', 'is walking', 'המילה Look! מכוונת למה שקורה עכשיו.', 'Dancers ברבים מקבלים are. לפעולה שמתרחשת עכשיו מוסיפים walking.'],
       ['She usually ___ the pink jacket.', 'wears', 'is wearing', 'wear', 'Usually פירושו בדרך כלל.', 'זה הרגל. עם she משתמשים ב־wears.'],
@@ -400,8 +422,11 @@ const lessons = [
   },
   {
     id: 'past', world: 'grammar', title: 'מה קרה אתמול?',
-    rule: 'Past Simple מתאר פעולה שהסתיימה בעבר. לפעלים רגילים מוסיפים בדרך כלל ed. אחרי did או didn’t משתמשים בצורת הבסיס.',
-    example: 'We watched the show. Did you watch it too?',
+    notes: [
+      ['Past Simple', 'פעולה שהסתיימה בעבר. לפועל רגיל מוסיפים בדרך כלל ed.', ['We ', 'watched', ' the show.']],
+      ['did / didn’t', 'בשאלה או בשלילה חוזרים לצורת הבסיס של הפועל.', ['Did you ', 'watch', ' the show?'], ['We didn’t ', 'watch', ' the show.']],
+      ['was / were', 'אלה צורות העבר של am, is ו־are.', ['The room ', 'was', ' quiet.'], ['The lights ', 'were', ' blue.']]
+    ],
     items: questions([
       ['Yesterday, Maya ___ her room.', 'cleaned', 'cleans', 'is cleaning', 'Yesterday מסמן את העבר.', 'Clean הוא פועל רגיל, ובעבר מוסיפים ed.'],
       ['Did you ___ the final episode last night?', 'watch', 'watched', 'watching', 'אחרי Did חוזרים לצורת הבסיס.', 'Did כבר מסמן עבר, ולכן משתמשים ב־watch.'],
@@ -412,8 +437,10 @@ const lessons = [
   },
   {
     id: 'future', world: 'grammar', title: 'תוכניות ותחזיות לעתיד',
-    rule: 'משתמשים ב־am/is/are going to לתוכנית שכבר נקבעה, וב־will למשל לתחזית או להחלטה עכשיו. אחרי שתיהן באה צורת הבסיס.',
-    example: 'We are going to practice at six. I think we will win.',
+    notes: [
+      ['am / is / are going to', 'לתוכנית שכבר קבענו. אחר כך כותבים את צורת הבסיס.', ['We ', 'are going to practice', ' at six.']],
+      ['will', 'לתחזית או להחלטה שמקבלים באותו רגע. גם כאן משתמשים בצורת הבסיס.', ['I think we ', 'will win', '.']]
+    ],
     items: questions([
       ['We have a plan. We ___ to meet at six.', 'are going', 'is going', 'will going', 'זו תוכנית, והנושא הוא we.', 'עם we משתמשים ב־are going to לתוכנית.'],
       ['I think our team will ___ the match.', 'win', 'wins', 'winning', 'אחרי will באה צורת הבסיס.', 'כותבים will win, בלי s ובלי ing.'],
@@ -423,8 +450,10 @@ const lessons = [
   },
   {
     id: 'verb-past', world: 'verbs', title: 'רמיקס לפעלים בעבר',
-    rule: 'לפעלים לא רגילים יש צורת עבר מיוחדת. כשלומדים אותם בקבוצות קטנות קל יותר לשלוף אותם בתוך משפט.',
-    example: 'go → went · find → found · see → saw · take → took · make → made',
+    notes: [
+      ['V1 → V2', 'לכל פועל לא רגיל כאן יש צורת עבר משלו.',
+        ['go → ', 'went'], ['find → ', 'found'], ['see → ', 'saw'], ['take → ', 'took'], ['make → ', 'made']]
+    ],
     items: questions([
       ['Yesterday, I ___ to the studio. (go)', 'went', 'goed', 'gone', 'צורת העבר של go מתחילה ב־w.', 'Go → went. למשל, I went to the studio.'],
       ['Last night, we ___ a strange key. (find)', 'found', 'finded', 'find', 'צורת העבר מתחילה ב־fou.', 'Find → found. למשל, We found a key.'],
@@ -435,8 +464,12 @@ const lessons = [
   },
   {
     id: 'verb-three', world: 'verbs', title: 'הצורה השלישית',
-    rule: 'במשפטי Present Perfect משתמשים ב־have או has ואחריהם הצורה השלישית של הפועל. עם he, she, it משתמשים ב־has.',
-    example: 'see → saw → seen · write → wrote → written · eat → ate → eaten',
+    notes: [
+      ['have / has + V3', 'אחרי have או has כותבים את הצורה השלישית. עם he, she, it בוחרים has.',
+        ['I have ', 'seen', ' the show.'], ['She has ', 'written', ' a song.']],
+      ['V1 → V2 → V3', 'הצורה השלישית מופיעה בסוף.', ['see → saw → ', 'seen'],
+        ['write → wrote → ', 'written'], ['eat → ate → ', 'eaten'], ['take → took → ', 'taken']]
+    ],
     items: questions([
       ['I have ___ that show before. (see)', 'seen', 'saw', 'see', 'Have מצביע על הצורה השלישית.', 'See → saw → seen. אחרי have משתמשים ב־seen.'],
       ['She has ___ a new song. (write)', 'written', 'wrote', 'writed', 'הצורה השלישית מסתיימת ב־en.', 'Write → wrote → written. כאן has written.'],
@@ -446,8 +479,12 @@ const lessons = [
   },
   {
     id: 'midnight-rehearsal', world: 'reading', title: 'חזרה אחרי חצות', textTitle: 'Rehearsal After Midnight',
-    passage: 'Ari met the new singer, Vale, halfway through rehearsals for the winter concert. Vale could sing every note but only came to the studio after sunset. One night, Ari saw an old concert photo on a noticeboard. The photo was from 1976. Vale stood in the front row, wearing the same silver ring. At the next rehearsal, Ari showed her the picture. “The song is mine,” Vale said softly. “I stopped singing it fifty years ago.” Ari moved a second microphone onto the stage. “Then tonight is your chance to sing it again.”',
-    rule: 'חפשי שני רמזים שמראים מה מיוחד בווייל. שימי לב מה ארי בוחרת לעשות כשהיא מבינה.',
+    passage: [
+      'Ari met the new singer, Vale, halfway through rehearsals for the winter concert. Vale could sing every note but only came to the studio after sunset.',
+      'One night, Ari saw an old concert photo on a noticeboard. The photo was from 1976. Vale stood in the front row, wearing the same silver ring.',
+      'At the next rehearsal, Ari showed her the picture. “The song is mine,” Vale said softly. “I stopped singing it fifty years ago.” Ari moved a second microphone onto the stage. “Then tonight is your chance to sing it again.”'
+    ],
+    rule: 'חפשי שני רמזים שמראים מה מיוחד בווייל.',
     items: questions([
       ['When does Vale come to the studio?', 'After sunset', 'Before school', 'Only at noon', 'חפשי משפט שמתאר מתי היא מגיעה לחזרות.', 'Vale מגיעה לסטודיו רק אחרי השקיעה.'],
       ['What connects Vale to the old photo?', 'Her face and her silver ring', 'A song title on the wall', 'The color of the microphone', 'איזה פרט ארי מזהה בתמונה משנת 1976?', 'Ari מזהה את Vale ואת הטבעת הכסופה שהיא עדיין עונדת.'],
@@ -457,8 +494,12 @@ const lessons = [
   },
   {
     id: 'last-frequency', world: 'reading', title: 'התדר האחרון', textTitle: 'The Last Frequency',
-    passage: 'A storm cut the power just as Jules and Noa finished editing a track for their school show. A little radio on the desk kept playing. Then a voice said, “Do not open the blue door until the fourth beep.” Outside the studio, a blue door had appeared where there was usually a window. At the third beep, Noa reached for the handle, but Jules stopped her. The fourth beep sounded. Behind the door was their studio again, exactly one minute ahead. On the empty desk, Noa found a note in her own handwriting: “Next time, bring a flashlight.”',
-    rule: 'עקבי אחרי סדר האירועים והמילים before, after ו־until כדי להבין את הרמז.',
+    passage: [
+      'A storm cut the power just as Jules and Noa finished editing a track for their school show. A little radio on the desk kept playing. Then a voice said, “Do not open the blue door until the fourth beep.”',
+      'Outside the studio, a blue door had appeared where there was usually a window. At the third beep, Noa reached for the handle, but Jules stopped her. The fourth beep sounded.',
+      'Behind the door was their studio again, exactly one minute ahead. On the empty desk, Noa found a note in her own handwriting: “Next time, bring a flashlight.”'
+    ],
+    rule: 'שימי לב מה קרה בכל צפצוף.',
     items: questions([
       ['What kept working after the power went out?', 'A small radio', 'A camera', 'The lights outside', 'חפשי את המילים kept playing.', 'הרדיו הקטן המשיך לנגן אחרי הפסקת החשמל.'],
       ['Where did the blue door appear?', 'In the place of a window', 'Under the desk', 'At the school entrance', 'בחלק הראשון כתוב מה בדרך כלל נמצא שם.', 'הדלת הכחולה הופיעה במקום שבו בדרך כלל יש חלון.'],
@@ -468,8 +509,12 @@ const lessons = [
   },
   {
     id: 'station', world: 'reading', title: 'הצליל מתחנה 13', textTitle: 'The Sound from Station 13',
-    passage: 'On Friday evening, Liv and her friend Mika were practicing a song in the school music room. At 7:13, an old radio turned on by itself. A voice said, “Look under the third chair.” Mika wanted to leave, but Liv looked under the chair and found a silver key. The key opened a drawer next to the piano. Inside was a note from last year’s music club. It invited them to add their own song to a school tradition. Suddenly, the room felt much less scary.',
-    rule: 'קראי פעם אחת כדי להבין מה קרה, ואז חזרי למשפטים שעוזרים לענות על כל שאלה.',
+    passage: [
+      'On Friday evening, Liv and her friend Mika were practicing a song in the school music room. At 7:13, an old radio turned on by itself. A voice said, “Look under the third chair.”',
+      'Mika wanted to leave, but Liv looked under the chair and found a silver key. The key opened a drawer next to the piano.',
+      'Inside was a note from last year’s music club. It invited them to add their own song to a school tradition. Suddenly, the room felt much less scary.'
+    ],
+    rule: 'חזרי למשפט בסיפור שבו מסתתרת התשובה.',
     items: questions([
       ['Where were Liv and Mika at the beginning?', 'In the school music room', 'At a radio station', 'In a café', 'חפשי מקום במשפט הראשון.', 'המשפט הראשון מספר שהן התאמנו בחדר המוזיקה.'],
       ['What did Liv find under the chair?', 'A silver key', 'A note', 'An old radio', 'החפץ מתואר במילה silver.', 'ליב מצאה מפתח כסף. את הפתק היא מצאה מאוחר יותר במגירה.'],
@@ -479,8 +524,12 @@ const lessons = [
   },
   {
     id: 'backstage', world: 'reading', title: 'חמש דקות למופע', textTitle: 'Five Minutes to Show Time',
-    passage: 'Five minutes before the talent show, Dana could not find her jacket. She needed it for the first dance. Noor noticed a thin line of silver glitter on the floor. They followed it to the art room. Inside, a younger student was holding the jacket. He had found it in the hall and wanted to return it, but he did not know whose it was. Dana thanked him and ran back to the stage. When the music started, she smiled at Noor. They had made it just in time.',
-    rule: 'שימי לב מי עושה כל פעולה ולמילים שמספרות על סדר האירועים, כמו before ו־when.',
+    passage: [
+      'Five minutes before the talent show, Dana could not find her jacket. She needed it for the first dance. Noor noticed a thin line of silver glitter on the floor. They followed it to the art room.',
+      'Inside, a younger student was holding the jacket. He had found it in the hall and wanted to return it, but he did not know whose it was.',
+      'Dana thanked him and ran back to the stage. When the music started, she smiled at Noor. They had made it just in time.'
+    ],
+    rule: 'שימי לב מי מצא כל רמז.',
     items: questions([
       ['Why did Dana need her jacket?', 'It was for the first dance', 'She was cold', 'She wanted to paint it', 'חפשי את המשפט השני.', 'דנה הייתה צריכה את הז׳קט לריקוד הראשון.'],
       ['What helped them find the jacket?', 'A line of glitter', 'A text message', 'A loud voice', 'מה נור הבחינה בו על הרצפה?', 'הן עקבו אחרי פס דק של נצנצים.'],
@@ -490,8 +539,12 @@ const lessons = [
   },
   {
     id: 'arcade', world: 'reading', title: 'המכונה שנדלקה בלילה', textTitle: 'The Midnight Arcade',
-    passage: 'A game shop in town had a broken arcade machine. For weeks, nobody touched it. Then Ben saw a bright message on its screen: “Player two needed.” He asked Aya to join him. Each player could open doors for the other, but neither could finish alone. On their third try, they stopped rushing and started talking. Aya described what she saw, and Ben waited for her signal. They reached the last room together. The screen showed their score and a new message: “Good teams listen.”',
-    rule: 'חפשי בקטע מה השתנה בין ההתחלה לסוף. זה עוזר למצוא את הרעיון המרכזי.',
+    passage: [
+      'A game shop in town had a broken arcade machine. For weeks, nobody touched it. Then Ben saw a bright message on its screen: “Player two needed.”',
+      'He asked Aya to join him. Each player could open doors for the other, but neither could finish alone. On their third try, they stopped rushing and started talking.',
+      'Aya described what she saw, and Ben waited for her signal. They reached the last room together. The screen showed their score and a new message: “Good teams listen.”'
+    ],
+    rule: 'חפשי מה בן ואיה עשו אחרת בניסיון השלישי.',
     items: questions([
       ['What did Ben see on the screen?', 'A message asking for a second player', 'A map of the town', 'A list of shops', 'חפשי את המילים Player two needed.', 'ההודעה אמרה שהמשחק צריך שחקן שני.'],
       ['Why did Ben ask Aya to join?', 'The game needed two players', 'He wanted to leave', 'Aya owned the shop', 'מה המשחק ביקש לפני שאיה הגיעה?', 'המשחק הצריך שחקן נוסף, ולכן בן הזמין את איה.'],
@@ -501,8 +554,9 @@ const lessons = [
   },
   {
     id: 'stage-words', world: 'vocab', title: 'מילים מאחורי הקלעים',
-    rule: 'נסי להבין את המילה לפי מה שקורה במשפט. לפעמים מילה שכבר מוכרת לך נותנת את הרמז הכי טוב.',
-    example: 'The audience clapped. · הקהל מחא כפיים.',
+    notes: [
+      ['audience', 'קהל. הפעולה במשפט נותנת רמז: מי יכול למחוא כפיים?', ['The ', 'audience', ' clapped.']]
+    ],
     items: questions([
       ['The ___ clapped after the song.', 'audience', 'costume', 'screen', 'מי יכול למחוא כפיים אחרי שיר?', 'Audience פירושו קהל. האנשים בקהל מחאו כפיים.'],
       ['We need to ___ before the show.', 'practice', 'forget', 'borrow', 'מה עוזר להגיע מוכנים למופע?', 'Practice פירושו להתאמן או לתרגל.'],
@@ -513,8 +567,9 @@ const lessons = [
   },
   {
     id: 'quest-words', world: 'vocab', title: 'מילים של משימות ותעלומות',
-    rule: 'קראי את המשפט השלם אחרי כל בחירה וראי אם המילה שבחרת באמת מתאימה למה שקורה בו.',
-    example: 'We followed a clue to the door. · עקבנו אחרי רמז עד לדלת.',
+    notes: [
+      ['clue', 'רמז. קראי את כל המשפט ובדקי אם הפירוש מתאים.', ['We followed a ', 'clue', ' to the door.']]
+    ],
     items: questions([
       ['The note gave us a ___ about where to look.', 'clue', 'habit', 'mirror', 'מה יכול לעזור לנו לדעת איפה לחפש?', 'Clue הוא רמז. הפתק נתן רמז איפה לחפש.'],
       ['Can you ___ this problem with me?', 'solve', 'wear', 'invite', 'מה עושים עם בעיה?', 'Solve פירושו לפתור. Solve a problem פירושו לפתור בעיה.'],
@@ -772,6 +827,9 @@ const recommendationOrder = ['be', 'verb-past', 'simple', 'midnight-rehearsal', 
 const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 const action = (label, attrs, style = '') => '<button type="button" class="action ' + style + '" ' + attrs + '>' + label + '</button>';
 const english = content => '<span dir="ltr" lang="en">' + escapeHtml(content) + '</span>';
+const mixedText = content => content
+  .split(/([A-Za-z][A-Za-z0-9’'-]*(?:[ ,/+→]+[A-Za-z][A-Za-z0-9’'-]*)*)/g)
+  .map((part, index) => index % 2 ? english(part) : escapeHtml(part)).join('');
 const passMark = lesson => Math.ceil(lesson.items.length * 0.6);
 const cleared = lesson => (data.best[lesson.id] ?? -1) >= passMark(lesson);
 const completed = () => lessons.filter(cleared).length;
@@ -821,7 +879,7 @@ function home() {
   return '<div class="greeting"><div><h1>היי' + (data.name ? ', <bdi>' + escapeHtml(data.name) + '</bdi>' : '!') +
     '</h1></div></div>' +
     '<section class="daily"><div class="hero-art" aria-hidden="true"></div><div class="daily-copy"><span class="eyebrow"><span aria-hidden="true">✦</span>' + (resume ? 'משימה פתוחה' : 'מומלץ לך') + '</span>' +
-    '<h2>' + lesson.title + '</h2>' +
+    '<h2>' + mixedText(lesson.title) + '</h2>' +
     action(resume ? 'להמשיך במשימה' : 'מתחילות לשחק', 'data-lesson="' + lesson.id + '"', 'luminous') +
     '</div></section>' + dictationShortcut() +
     '<section class="section"><div class="section-header"><h2>באיזה עולם משחקות?</h2></div>' + worldCards() + '</section>';
@@ -830,7 +888,7 @@ function home() {
 function missionList(group) {
   return '<div class="mission-list">' + group.map(lesson => {
     const status = data.round?.id === lesson.id ? 'להמשיך' : cleared(lesson) ? '✓ עברת' : lesson.items.length + ' שאלות';
-    return '<button type="button" class="mission" data-lesson="' + lesson.id + '"><span>' + lesson.title + '</span><small>' + status + '</small><span class="mission-play" aria-hidden="true">◂</span></button>';
+    return '<button type="button" class="mission" data-lesson="' + lesson.id + '"><span>' + mixedText(lesson.title) + '</span><small>' + status + '</small><span class="mission-play" aria-hidden="true">◂</span></button>';
   }).join('') + '</div>';
 }
 
@@ -846,29 +904,35 @@ function learn() {
 
 function passage(lesson, collapsible) {
   if (!lesson.passage) return '';
-  const contents = '<p lang="en" dir="ltr">' + escapeHtml(lesson.passage) + '</p>';
-  return collapsible ? '<details class="passage" data-passage><summary>' + english(lesson.textTitle) + ' · פתיחת הסיפור</summary>' + contents + '</details>'
-    : '<div class="passage"><h2 lang="en" dir="ltr">' + lesson.textTitle + '</h2>' + contents + '</div>';
+  const contents = '<div class="story-text" lang="en" dir="ltr">' + lesson.passage.map(paragraph => '<p>' +
+    escapeHtml(paragraph) + '</p>').join('') + '</div>';
+  return collapsible ? '<details class="passage" data-passage><summary>הסיפור</summary>' + contents + '</details>'
+    : '<div class="passage"><h2 lang="en" dir="ltr">' + escapeHtml(lesson.textTitle) + '</h2>' + contents + '</div>';
 }
 
 function rule(lesson) {
-  return '<div class="rule"><p>' + lesson.rule + '</p>' +
-    (lesson.example ? '<p dir="auto">' + escapeHtml(lesson.example) + '</p>' : '') + '</div>';
+  if (!lesson.notes) return '<p class="reading-tip">' + mixedText(lesson.rule) + '</p>';
+  return '<ul class="rule-list" role="list">' + lesson.notes.map(([term, usage, ...examples]) =>
+    '<li><div class="rule-usage"><span class="rule-term" dir="ltr" lang="en">' + escapeHtml(term) +
+    '</span><p>' + mixedText(usage) + '</p></div><div class="rule-examples" dir="ltr" lang="en">' +
+    examples.map(([before, emphasis, after = '']) => '<p>' + escapeHtml(before) + '<mark>' + escapeHtml(emphasis) +
+      '</mark>' + escapeHtml(after) + '</p>').join('') + '</div></li>').join('') + '</ul>';
 }
 
 function briefing() {
   return '<div class="narrow"><div class="lesson-heading"><div class="world-art art-' + active.world +
-    '" aria-hidden="true"></div>' + header(active.title, '') + '</div><section class="paper"><h2>' +
-    (active.passage ? 'זמן לסיפור' : 'הכלל במשימה') + '</h2>' + (active.passage ? passage(active, false) : rule(active)) +
-    '<div class="action-row">' + action('לשאלות', 'data-begin') + action('לעולם המשחק', 'data-world="' + active.world + '"', 'secondary') + '</div></section></div>';
+    '" aria-hidden="true"></div>' + header(mixedText(active.title), '') + '</div><section class="paper lesson-briefing">' +
+    (active.passage ? passage(active, false) : '<h2>' + (active.world === 'vocab' ? 'מילה לדוגמה' : 'כללים ודוגמאות') + '</h2>' + rule(active)) +
+    '<div class="action-row">' + action('לתרגול', 'data-begin') + '<button type="button" class="link-button" data-world="' +
+    active.world + '">חזרה למשימות</button></div></section></div>';
 }
 
 function quiz() {
   const round = data.round;
   const item = active.items[round.index];
   const solved = round.solved;
-  return '<div class="narrow">' + header(active.title, '') + '<section class="paper quiz-card">' +
-    '<div class="quiz-meta"><span>שאלה ' + (round.index + 1) + ' מתוך ' + active.items.length + '</span><span>' + round.score + ' בניסיון ראשון</span></div>' +
+  return '<div class="narrow">' + header(mixedText(active.title), '') + '<section class="paper quiz-card">' +
+    '<div class="quiz-meta"><span>שאלה ' + (round.index + 1) + ' מתוך ' + active.items.length + '</span></div>' +
     '<progress aria-label="התקדמות במשימה" value="' + (round.index + Number(solved)) + '" max="' + active.items.length + '"></progress>' +
     passage(active, true) + '<p class="prompt" id="prompt" tabindex="-1" dir="ltr" lang="en">' + escapeHtml(item.prompt) + '</p>' +
     '<div class="choices" role="group" aria-labelledby="prompt">' + round.orders[round.index].map(index => {
@@ -878,18 +942,19 @@ function quiz() {
         (wrong || solved ? ' disabled' : '') + '><span>' + escapeHtml(item.choices[index]) + '</span><span aria-hidden="true">' +
         (type === 'correct' ? '✓' : wrong ? '×' : '○') + '</span></button>';
     }).join('') + '</div><div class="answer-feedback ' + (solved ? 'success' : round.wrong.length ? 'try' : '') +
-    '" id="feedback" tabindex="-1" role="status">' + (solved ? '<b>בדיוק!</b> ' + item.why :
-      round.wrong.length ? '<b>נסי שוב.</b> ' + item.hint : round.hint ? '<b>רמז.</b> ' + item.hint : '') + '</div>' +
+    '" id="feedback" tabindex="-1" role="status">' + (solved ? '<b>בדיוק!</b> ' + mixedText(item.why) :
+      round.wrong.length ? '<b>נסי שוב.</b> ' + mixedText(item.hint) : round.hint ? '<b>רמז.</b> ' + mixedText(item.hint) : '') + '</div>' +
     (solved ? '<div class="action-row">' + action(round.index + 1 === active.items.length ? 'לסיכום המשימה' : 'לשאלה הבאה', 'data-next') + '</div>'
-      : '<div class="quiz-tools"><details class="hint"><summary>' + (active.passage ? 'טיפ לקריאה' : 'הכלל') + '</summary>' + rule(active) + '</details>' +
-        '<button type="button" class="link-button" data-hint>✧ רמז</button></div>') + '</section></div>';
+      : '<div class="quiz-tools"><button type="button" class="link-button" data-hint>✧ רמז לשאלה</button>' +
+        '<details class="hint"><summary>' + (active.passage ? 'טיפ לקריאה' : active.world === 'vocab' ? 'מילה לדוגמה' : 'כללים ודוגמאות') +
+        '</summary>' + rule(active) + '</details></div>') + '</section></div>';
 }
 
 function finishView() {
   const success = result.score >= passMark(active);
   const suggested = recommendation();
   return '<div class="narrow paper result"><span class="result-icon" aria-hidden="true">' + (success ? '🏆' : '✦') + '</span>' +
-    '<h1>' + (success ? 'משימה עברה!' : 'סיימת את התרגול!') + '</h1><p><strong>' + active.title +
+    '<h1>' + (success ? 'משימה עברה!' : 'סיימת את התרגול!') + '</h1><p><strong>' + mixedText(active.title) +
     '</strong> · ' + result.score + ' מתוך ' + active.items.length + ' תשובות נכונות בניסיון הראשון.</p><p>' +
     (result.earned ? 'הרווחת <strong>' + result.earned + ' נקודות</strong> לאוסף שלך.' :
       'שיפור השיא האישי יוסיף נקודות לאוסף שלך.') + '</p>' +
@@ -907,7 +972,7 @@ function progressView() {
       action('לתרגל שוב', 'data-nav="dictation"', 'secondary') + '</div><p>השיא שלי: ' + data.dictation.best + ' מתוך 10 פעלים מלאים.</p></section>') +
     '<section class="section paper"><div class="section-header"><h2>שיאים אישיים</h2></div>' +
     (Object.keys(data.best).length ? '<div class="mission-list">' + lessons.filter(lesson => data.best[lesson.id] !== undefined).map(lesson =>
-      '<button type="button" class="mission" data-lesson="' + lesson.id + '"><span>' + lesson.title + '</span><small>' +
+      '<button type="button" class="mission" data-lesson="' + lesson.id + '"><span>' + mixedText(lesson.title) + '</span><small>' +
       data.best[lesson.id] + ' / ' + lesson.items.length + '</small></button>').join('') + '</div>'
       : '<p class="muted">כשתסיימי משימה, השיא הראשון שלך יופיע כאן.</p>') + '</section>';
 }
