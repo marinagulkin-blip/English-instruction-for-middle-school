@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f6ff">
+  <meta name="description" content="משחקוני אנגלית לכיתה ח׳ עם משימות קצרות, הסברים בעברית ופרסים.">
+  <title>WordQuest — אנגלית במשחק</title>
+  <style>:root {
+  color-scheme: light;
+  --paper: #f8f6ff;
+  --ink: #211735;
+  --muted: #625773;
+  --line: #e7dff3;
+  --purple: #602ec5;
+  --deep: #251344;
+  --lime: #dbff82;
+  --white: #fff;
+  font-family: Assistant, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 280px; min-height: 100vh; background: var(--paper); color: var(--ink); }
+button, input { font: inherit; }
+button, summary { cursor: pointer; }
+button, a, input, summary { -webkit-tap-highlight-color: transparent; }
+button { color: inherit; }
+button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px solid #9a5cff; outline-offset: 3px; }
+button:disabled { cursor: default; opacity: .57; }
+[lang="en"], [dir="ltr"] { font-family: system-ui, sans-serif; }
+.sr, .skip:not(:focus) { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.skip { z-index: 10; position: fixed; inset: 8px 8px auto auto; padding: 10px; background: white; }
+.topbar { background: #fff; border-bottom: 1px solid var(--line); }
+.top-inner { max-width: 1144px; margin: auto; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand, .top-actions, .balance { display: flex; align-items: center; gap: 10px; }
+.brand { border: 0; background: transparent; padding: 0; font-size: 23px; font-weight: 900; letter-spacing: -.06em; }
+.brand > span:last-child span { color: var(--purple); }
+.brand-icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 13px; color: var(--lime); background: #6530d2; box-shadow: inset 0 -3px #46209c; font-size: 25px; rotate: 6deg; }
+.balance, .profile { height: 42px; min-width: 42px; justify-content: center; border-radius: 13px; border: 1px solid #e5dbfc; background: #f2ebff; }
+.balance { padding-inline: 11px; color: #4b229d; }
+.profile { background: #e2ffc1; border-color: #d0f1a6; font-size: 20px; }
+main { width: min(100% - 48px, 1096px); margin: 0 auto; padding: 32px 0 114px; outline: none; }
+h1, h2, h3, p { margin-block: 0; }
+h1, h2, h3 { line-height: 1.14; overflow-wrap: anywhere; }
+h1 { font-size: clamp(2.25rem, 5vw, 3.15rem); letter-spacing: -.047em; }
+h2 { font-size: clamp(1.38rem, 3vw, 1.8rem); letter-spacing: -.035em; }
+h3 { font-size: 1.13rem; }
+p { line-height: 1.55; }
+.muted { color: var(--muted); }
+.greeting { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
+.greeting p, .page-head p { margin-top: 7px; }
+.daily { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr); isolation: isolate; overflow: hidden; border-radius: 26px; background: #2c1756; color: white; min-height: 271px; box-shadow: 0 9px 0 #e6d9ff; }
+.daily-copy { position: relative; z-index: 1; padding: 32px 34px; }
+.daily h2 { font-size: clamp(1.95rem, 4vw, 3rem); max-width: 560px; margin: 11px 0 8px; }
+.daily p { color: #eadcff; }
+.daily .action { margin-top: 22px; }
+.eyebrow { display: inline-flex; gap: 7px; align-items: center; color: #e4ffac; font-weight: 800; font-size: .9rem; }
+.hero-art { position: relative; min-width: 0; display: grid; place-items: center; overflow: hidden; background: radial-gradient(ellipse at center, #783ed7 0%, transparent 68%); }
+.hero-art::before { content: ''; position: absolute; inset: 0; opacity: .3; background: radial-gradient(circle, #b68bff 1px, transparent 1.5px) 0 0 / 17px 17px; mask-image: radial-gradient(ellipse, #000 25%, transparent 79%); }
+.ring { position: absolute; width: min(84%, 340px); height: 76%; border: 1px solid #a679eb80; border-radius: 50%; rotate: -24deg; }
+.ring.second { rotate: 26deg; width: min(74%, 292px); height: 83%; }
+.keys { z-index: 1; position: relative; display: flex; align-items: center; align-self: center; padding-top: 10px; direction: ltr; }
+.tile { display: grid; place-items: center; width: clamp(58px, 8vw, 95px); aspect-ratio: .98; border-radius: 15px; color: #291552; font: 900 clamp(1.07rem, 4vw, 2.23rem)/1 system-ui, sans-serif; letter-spacing: -.085em; border: 2px solid #fff8; }
+.tile:nth-child(1) { background: #edb8ff; rotate: -16deg; transform: translate(3px, 13px); box-shadow: 0 8px #ae63db; }
+.tile:nth-child(2) { background: #deff87; rotate: -8deg; translate: 0 -18px; z-index: 2; box-shadow: 0 8px #8baa46; }
+.tile:nth-child(3) { background: #b4cbff; rotate: 14deg; transform: translate(-2px, 6px); box-shadow: 0 8px #6d8ad5; }
+.spark { position: absolute; color: #e1ff95; font-size: 29px; z-index: 2; }
+.spark.one { inset: 15% 18% auto auto; }
+.spark.two { inset: auto auto 17% 15%; color: #f4afff; font-size: 24px; }
+.spark.three { inset: auto 19% 17% auto; color: #d0c0ff; font-size: 16px; }
+.section { margin-top: 30px; }
+.section-header { display: flex; align-items: center; gap: 12px; justify-content: space-between; margin-bottom: 13px; }
+.section-header p { margin-top: 4px; }
+.link-button { border: 0; background: transparent; color: #5424b7; font-weight: 800; min-height: 44px; padding-inline: 4px; }
+.world-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; }
+.purple { --accent: #e8daff; --accent-ink: #5124aa; }
+.pink { --accent: #fce0f4; --accent-ink: #8a266a; }
+.blue { --accent: #dfe9ff; --accent-ink: #2c4a99; }
+.lime { --accent: #e6f7c3; --accent-ink: #385415; }
+.world-card { text-align: start; border: 1px solid var(--line); border-radius: 19px; padding: 16px; background: #fff; box-shadow: 0 3px #eee7f7; display: grid; gap: 8px; align-content: start; min-height: 134px; }
+.world-card:hover, .mission:hover { border-color: #aa81eb; }
+.world-icon { display: grid; place-items: center; width: 43px; height: 43px; border-radius: 13px; background: var(--accent); font-size: 23px; }
+.world-card > span:last-child { font-size: .82rem; color: var(--accent-ink); font-weight: 750; justify-self: start; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.stat { background: #fff; border-radius: 16px; border: 1px solid var(--line); padding: 13px; display: flex; gap: 10px; align-items: center; }
+.stat span:first-child { display: grid; place-items: center; flex: 0 0 38px; height: 38px; font-size: 19px; background: #f1eaff; border-radius: 11px; }
+.stat b { display: block; font-size: 1.24rem; }
+.stat small { color: var(--muted); font-size: .84rem; }
+.navigation { position: fixed; z-index: 3; bottom: 0; left: 50%; translate: -50% 0; display: flex; justify-content: center; gap: 6px; min-width: min(100%, 450px); padding: 7px 10px calc(7px + env(safe-area-inset-bottom)); border: 1px solid var(--line); border-radius: 20px 20px 0 0; background: #fffffff5; box-shadow: 0 -2px 16px #36215c14; }
+.navigation button { display: grid; justify-items: center; gap: 2px; flex: 1; min-width: 61px; min-height: 49px; padding: 5px 8px; border: 0; border-radius: 13px; background: transparent; color: #5e5270; font-size: .82rem; font-weight: 750; }
+.navigation button span { font-size: 22px; line-height: 1; }
+.navigation button[aria-current="page"] { background: #efe6ff; color: #5421b7; }
+.arrowless { margin-bottom: 10px; }
+.page-head { margin: 6px 0 22px; }
+.paper { border: 1px solid var(--line); padding: clamp(16px, 4vw, 26px); background: white; border-radius: 22px; }
+.narrow { width: min(100%, 680px); margin-inline: auto; }
+.action { display: inline-flex; justify-content: center; align-items: center; gap: 7px; border-radius: 12px; background: var(--purple); color: white; border: 1px solid transparent; min-height: 46px; padding: 9px 17px; font-weight: 800; }
+.action:hover:not(:disabled) { filter: brightness(.94); }
+.action.luminous { color: #26133e; background: var(--lime); }
+.action.secondary { background: #f0e8fd; color: #50289e; }
+.action.plain { background: white; border-color: var(--line); color: #50289e; }
+.action-row { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 14px; }
+.mission-list { display: grid; gap: 10px; }
+.mission { width: 100%; display: flex; justify-content: space-between; align-items: center; text-align: start; gap: 8px; border: 1px solid var(--line); border-radius: 15px; padding: 13px 16px; min-height: 58px; background: #fff; font-weight: 800; }
+.mission small { color: var(--muted); white-space: nowrap; font-size: .82rem; font-weight: 600; }
+.world-block { margin-top: 21px; }
+.world-block h2 { display: flex; align-items: center; gap: 9px; margin-bottom: 9px; }
+.world-block p { margin-bottom: 9px; }
+.rule, .passage, .answer-feedback { margin-top: 13px; border-radius: 13px; background: #f4eeff; padding: 12px 14px; line-height: 1.5; }
+details summary { min-height: 31px; font-weight: 800; line-height: 1.45; }
+.rule p, .passage p { margin-top: 6px; }
+.passage { background: #eef3ff; }
+.passage p[lang="en"] { line-height: 1.62; text-align: left; }
+.quiz-meta { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 8px; font-weight: 750; color: var(--muted); }
+progress { display: block; width: 100%; height: 11px; appearance: none; border: 0; background: #ece4f6; border-radius: 999px; overflow: hidden; }
+progress::-webkit-progress-bar { background: #ece4f6; }
+progress::-webkit-progress-value { background: #8146e6; }
+progress::-moz-progress-bar { background: #8146e6; }
+.prompt { margin: 21px 0 15px; text-align: left; font-size: clamp(1.15rem, 4vw, 1.55rem); font-weight: 800; }
+.choices { display: grid; gap: 8px; }
+.choice { min-height: 48px; border: 1px solid #dfd3f1; border-radius: 11px; background: white; text-align: left; padding: 9px 12px; font-weight: 700; }
+.choice:disabled { opacity: 1; }
+.choice:hover:not(:disabled) { border-color: #8850da; background: #f8f3ff; }
+.choice.wrong { border-color: #cc6195; background: #ffe8f3; color: #78224b; }
+.choice.correct { border-color: #71a050; background: #e7f7d6; color: #284b24; }
+.answer-feedback:empty { display: none; }
+.answer-feedback.success { background: #e7f7d6; color: #284b24; }
+.answer-feedback.try { background: #fcecf5; color: #78224b; }
+.hint { margin-top: 9px; }
+.result { background: linear-gradient(150deg, #fff 31%, #f0e5ff); }
+.result-icon { display: inline-grid; place-items: center; width: 61px; height: 61px; border-radius: 19px; background: #dfff97; font-size: 31px; margin-bottom: 14px; }
+.result p { margin-top: 8px; }
+.result .action-row { margin-top: 19px; }
+.prize-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.prize { display: grid; justify-items: start; gap: 9px; }
+.prize-icon { display: grid; place-items: center; width: 55px; height: 55px; border-radius: 15px; background: #efe6ff; font-size: 29px; }
+.prize:nth-child(2n) .prize-icon { background: #ffdef3; }
+.prize .action { font-size: .92rem; }
+.recent li + li { margin-top: 8px; }
+.form { display: grid; gap: 13px; }
+.form label { display: grid; gap: 6px; font-weight: 800; }
+.form input { border: 1px solid #cdc0df; border-radius: 10px; min-height: 45px; width: 100%; padding: 9px 11px; background: #fff; color: var(--ink); }
+.form .action { justify-self: start; }
+.status { color: #5124aa; min-height: 1.6em; }
+@media (max-width: 740px) {
+  main { width: calc(100% - 30px); padding-top: 24px; }
+  .top-inner { padding-inline: 15px; }
+  .world-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .daily-copy { padding: 24px 20px; }
+  .daily { min-height: 230px; }
+}
+@media (max-width: 490px) {
+  .greeting { margin-bottom: 16px; }
+  .daily { grid-template-columns: minmax(0, 1fr); }
+  .hero-art { grid-row: 1; height: 121px; }
+  .daily-copy { padding-top: 6px; padding-bottom: 18px; }
+  .daily h2 { font-size: 1.94rem; }
+  .daily .action { margin-top: 14px; }
+  .tile { border-radius: 12px; width: 61px; font-size: 1.4rem; }
+  .spark.one { inset-inline-end: 22%; }
+  .section { margin-top: 26px; }
+  .world-grid, .stats { gap: 8px; }
+  .world-card { min-height: 106px; padding: 11px; gap: 6px; }
+  .world-icon { width: 36px; height: 36px; font-size: 20px; }
+  .world-card h3 { font-size: 1rem; }
+  .stat { flex-direction: column; align-items: flex-start; gap: 5px; padding: 9px; }
+  .stat span:first-child { flex: auto; width: 31px; height: 31px; }
+  .navigation { width: 100%; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+  <a class="skip" href="#main">דילוג לתוכן</a>
+  <header class="topbar">
+    <div class="top-inner">
+      <button type="button" class="brand" data-nav="home" aria-label="WordQuest, מסך הבית"><span class="brand-icon" aria-hidden="true">✦</span><span dir="ltr">Word<span>Quest</span></span></button>
+      <div class="top-actions">
+        <button class="balance" type="button" data-nav="rewards"><span aria-hidden="true">✦</span> <b id="balance">0</b><span class="sr">נקודות, לפרסים</span></button>
+        <button class="profile" type="button" data-nav="settings" aria-label="הגדרות פרופיל"><span id="avatar" aria-hidden="true">🎧</span></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" tabindex="-1"></main>
+  <nav class="navigation" aria-label="ניווט ראשי">
+    <button type="button" data-nav="home"><span aria-hidden="true">⌂</span>בית</button>
+    <button type="button" data-nav="learn"><span aria-hidden="true">▦</span>משחקים</button>
+    <button type="button" data-nav="progress"><span aria-hidden="true">▥</span>התקדמות</button>
+    <button type="button" data-nav="rewards"><span aria-hidden="true">✧</span>פרסים</button>
+  </nav>
+  <noscript>צריך להפעיל JavaScript בדפדפן כדי לשחק.</noscript>
+  <script>const worlds = {
+  grammar: { name: 'דקדוק וזמנים', en: 'Grammar Lab', icon: '⚡', theme: 'purple', intro: 'משלימים משפטים ומגלים את הכלל שעובד מאחוריהם.' },
+  verbs: { name: 'פעלים לא רגילים', en: 'Verb Remix', icon: '🎛️', theme: 'pink', intro: 'בסיס, עבר וצורה שלישית בקצב שלך.' },
+  reading: { name: 'הבנת הנקרא', en: 'Mystery Files', icon: '🔍', theme: 'blue', intro: 'קוראים סיפורים קצרים ומחפשים רמזים בין השורות.' },
+  vocab: { name: 'אוצר מילים', en: 'Word Hunt', icon: '💎', theme: 'lime', intro: 'מגלים מילים שימושיות במשחקים, במוזיקה ובחיי היום-יום.' }
+};
+
+// Each question stores its correct answer first. Game rounds shuffle the display order.
+function questions(rows) {
+  return rows.map(([prompt, correct, wrongA, wrongB, hint, why]) => ({
+    prompt, correct, choices: [correct, wrongA, wrongB], hint, why
+  }));
+}
+
+const lessons = [
+  {
+    id: 'be', world: 'grammar', title: 'מתי אומרים am, is או are?',
+    rule: 'עם I משתמשים ב־am. עם he, she, it או שם עצם ביחיד משתמשים ב־is. עם you, we, they או שם עצם ברבים משתמשים ב־are.',
+    example: 'I am ready. The room is dark. The lights are blue.',
+    items: questions([
+      ['The lights ___ purple.', 'are', 'am', 'is', 'כמה אורות יש במשפט?', 'Lights היא מילה ברבים, ולכן משתמשים ב־are.'],
+      ['My avatar ___ ready.', 'is', 'are', 'am', 'אפשר להחליף את my avatar במילה it.', 'Avatar אחד הוא יחיד. עם it משתמשים ב־is.'],
+      ['I ___ excited for the show.', 'am', 'is', 'are', 'עם I יש צורה משלו של הפועל be.', 'עם I תמיד משתמשים ב־am בהווה.'],
+      ['___ you in my team?', 'Are', 'Is', 'Am', 'חשבי איך אומרים You ___ in my team.', 'עם you משתמשים ב־are. בשאלה מעבירים אותו להתחלה.'],
+      ['The music ___ not too loud.', 'is', 'are', 'am', 'Music מקבלת צורה של יחיד.', 'Music מקבלת is. את not מוסיפים אחריו כדי ליצור שלילה.']
+    ])
+  },
+  {
+    id: 'simple', world: 'grammar', title: 'הרגלים ב־Present Simple',
+    rule: 'משתמשים בזמן הזה להרגלים ולעובדות. עם he, she, it מוסיפים בדרך כלל s לפועל. בשאלה או בשלילה עם does מחזירים את הפועל לצורת הבסיס.',
+    example: 'She plays every day. Does she play on Fridays?',
+    items: questions([
+      ['Nora ___ music every morning.', 'plays', 'play', 'is playing', 'Every morning רומז על הרגל. Nora היא she.', 'עם she מוסיפים כאן s לפועל בשגרת יום.'],
+      ['My friends ___ after school on Mondays.', 'meet', 'meets', 'meeting', 'Friends הם רבים.', 'עם they משתמשים בצורת הבסיס meet.'],
+      ['Does Eli ___ the last level every week?', 'beat', 'beats', 'beating', 'Does כבר מראה שמדובר ב־he.', 'אחרי does באה צורת הבסיס beat.'],
+      ['She ___ like loud music.', 'does not', 'do not', 'is not', 'בשגרה, בשלילה עם she מתחילים ב־does.', 'Does not + like יוצר שלילה בהווה פשוט עם she.'],
+      ['This store ___ at nine every day.', 'opens', 'open', 'opening', 'אפשר להחליף את this store ב־it.', 'עם it מוסיפים s לפועל open.']
+    ])
+  },
+  {
+    id: 'now', world: 'grammar', title: 'עכשיו או בדרך כלל?',
+    rule: 'הרגלים מקבלים Present Simple. פעולה שמתרחשת עכשיו מקבלת Present Progressive, כלומר am, is או are, ואז פועל עם ing.',
+    example: 'I practice on Mondays. I am practicing right now.',
+    items: questions([
+      ['Look! The dancers ___ onto the stage.', 'are walking', 'walks', 'is walking', 'המילה Look! מכוונת למה שקורה עכשיו.', 'Dancers ברבים מקבלים are. לפעולה שמתרחשת עכשיו מוסיפים walking.'],
+      ['She usually ___ the pink jacket.', 'wears', 'is wearing', 'wear', 'Usually פירושו בדרך כלל.', 'זה הרגל. עם she משתמשים ב־wears.'],
+      ['I ___ a message right now.', 'am writing', 'write', 'are writing', 'Right now מכוון לפעולה שעושים ממש עכשיו.', 'עם I משתמשים ב־am ובפעולה הנוכחית כותבים writing.'],
+      ['Every Friday, they ___ a new game.', 'try', 'tries', 'are trying', 'Every Friday מציין פעולה שחוזרת.', 'עם they בזמן הווה פשוט משתמשים ב־try.'],
+      ['Listen! Someone ___ in the hall.', 'is singing', 'sings', 'are singing', 'מישהו שר ממש ברגע זה. Someone הוא יחיד.', 'Someone מקבל is ואחריו singing לפעולה שקורית עכשיו.']
+    ])
+  },
+  {
+    id: 'past', world: 'grammar', title: 'מה קרה אתמול?',
+    rule: 'Past Simple מתאר פעולה שהסתיימה בעבר. לפעלים רגילים מוסיפים בדרך כלל ed. אחרי did או didn’t משתמשים בצורת הבסיס.',
+    example: 'We watched the show. Did you watch it too?',
+    items: questions([
+      ['Yesterday, Maya ___ her room.', 'cleaned', 'cleans', 'is cleaning', 'Yesterday מסמן את העבר.', 'Clean הוא פועל רגיל, ובעבר מוסיפים ed.'],
+      ['Did you ___ the final episode last night?', 'watch', 'watched', 'watching', 'אחרי Did חוזרים לצורת הבסיס.', 'Did כבר מסמן עבר, ולכן משתמשים ב־watch.'],
+      ['We didn’t ___ the secret door yesterday.', 'find', 'found', 'finding', 'גם אחרי didn’t באה צורת הבסיס.', 'העבר נמצא ב־didn’t. צורת הבסיס של found היא find.'],
+      ['The room ___ quiet last night.', 'was', 'were', 'is', 'The room הוא יחיד והזמן עבר.', 'Was הוא צורת העבר של is.'],
+      ['The tickets ___ in my bag yesterday.', 'were', 'was', 'are', 'Tickets ברבים, ו־yesterday אומר אתמול.', 'Were הוא צורת העבר של are.']
+    ])
+  },
+  {
+    id: 'future', world: 'grammar', title: 'תוכניות ותחזיות לעתיד',
+    rule: 'משתמשים ב־am/is/are going to לתוכנית שכבר נקבעה, וב־will למשל לתחזית או להחלטה עכשיו. אחרי שתיהן באה צורת הבסיס.',
+    example: 'We are going to practice at six. I think we will win.',
+    items: questions([
+      ['We have a plan. We ___ to meet at six.', 'are going', 'is going', 'will going', 'זו תוכנית, והנושא הוא we.', 'עם we משתמשים ב־are going to לתוכנית.'],
+      ['I think our team will ___ the match.', 'win', 'wins', 'winning', 'אחרי will באה צורת הבסיס.', 'כותבים will win, בלי s ובלי ing.'],
+      ['Look at the schedule. She ___ going to sing first.', 'is', 'are', 'am', 'She היא יחיד.', 'עם she משתמשים ב־is going to.'],
+      ['I’ll ___ you with the music right now.', 'help', 'helps', 'helping', 'I’ll הוא קיצור של I will.', 'אחרי I’ll בא הפועל help בצורת הבסיס.']
+    ])
+  },
+  {
+    id: 'verb-past', world: 'verbs', title: 'רמיקס לפעלים בעבר',
+    rule: 'לפעלים לא רגילים יש צורת עבר מיוחדת. כשלומדים אותם בקבוצות קטנות קל יותר לשלוף אותם בתוך משפט.',
+    example: 'go → went · find → found · see → saw · take → took · make → made',
+    items: questions([
+      ['Yesterday, I ___ to the studio. (go)', 'went', 'goed', 'gone', 'צורת העבר של go מתחילה ב־w.', 'Go → went. למשל, I went to the studio.'],
+      ['Last night, we ___ a strange key. (find)', 'found', 'finded', 'find', 'צורת העבר מתחילה ב־fou.', 'Find → found. למשל, We found a key.'],
+      ['Yesterday, she ___ a blue light. (see)', 'saw', 'seen', 'seed', 'לצורת עבר יש שלוש אותיות.', 'See → saw בעבר פשוט. Seen משמשת אחרי have או has.'],
+      ['He ___ a photo after the show. (take)', 'took', 'taked', 'taken', 'שתי האותיות באמצע הן oo.', 'Take → took בעבר פשוט. Taken היא הצורה השלישית.'],
+      ['Last week, we ___ a playlist. (make)', 'made', 'maked', 'making', 'החליפי את k ב־d.', 'Make → made. למשל, We made a playlist.']
+    ])
+  },
+  {
+    id: 'verb-three', world: 'verbs', title: 'הצורה השלישית',
+    rule: 'במשפטי Present Perfect משתמשים ב־have או has ואחריהם הצורה השלישית של הפועל. עם he, she, it משתמשים ב־has.',
+    example: 'see → saw → seen · write → wrote → written · eat → ate → eaten',
+    items: questions([
+      ['I have ___ that show before. (see)', 'seen', 'saw', 'see', 'Have מצביע על הצורה השלישית.', 'See → saw → seen. אחרי have משתמשים ב־seen.'],
+      ['She has ___ a new song. (write)', 'written', 'wrote', 'writed', 'הצורה השלישית מסתיימת ב־en.', 'Write → wrote → written. כאן has written.'],
+      ['We have already ___ dinner. (eat)', 'eaten', 'ate', 'eating', 'מתחיל ב־eat ומסתיים ב־en.', 'Eat → ate → eaten. כאן have eaten.'],
+      ['He has ___ my notebook. (take)', 'taken', 'took', 'taked', 'צורת העבר היא took. כאן צריך צורה שלישית.', 'Take → took → taken. כאן has taken.']
+    ])
+  },
+  {
+    id: 'station', world: 'reading', title: 'הצליל מתחנה 13', textTitle: 'The Sound from Station 13',
+    passage: 'On Friday evening, Liv and her friend Mika were practicing a song in the school music room. At 7:13, an old radio turned on by itself. A voice said, “Look under the third chair.” Mika wanted to leave, but Liv looked under the chair and found a silver key. The key opened a drawer next to the piano. Inside was a note from last year’s music club. It invited them to add their own song to a school tradition. Suddenly, the room felt much less scary.',
+    rule: 'קראי פעם אחת כדי להבין מה קרה, ואז חזרי למשפטים שעוזרים לענות על כל שאלה.',
+    items: questions([
+      ['Where were Liv and Mika at the beginning?', 'In the school music room', 'At a radio station', 'In a café', 'חפשי מקום במשפט הראשון.', 'המשפט הראשון מספר שהן התאמנו בחדר המוזיקה.'],
+      ['What did Liv find under the chair?', 'A silver key', 'A note', 'An old radio', 'החפץ מתואר במילה silver.', 'ליב מצאה מפתח כסף. את הפתק היא מצאה מאוחר יותר במגירה.'],
+      ['Who left the note?', 'Last year’s music club', 'Mika’s family', 'The radio host', 'חפשי את המשפט שמתחיל ב־Inside.', 'בפתק היה מסר ממועדון המוזיקה של השנה שעברה.'],
+      ['How did Liv probably feel at the end?', 'Less afraid', 'More worried', 'Very angry', 'חזרי למשפט האחרון. מה פירוש less scary?', 'החדר הרגיש פחות מפחיד כשהתעלומה קיבלה הסבר.']
+    ])
+  },
+  {
+    id: 'backstage', world: 'reading', title: 'חמש דקות למופע', textTitle: 'Five Minutes to Show Time',
+    passage: 'Five minutes before the talent show, Dana could not find her jacket. She needed it for the first dance. Noor noticed a thin line of silver glitter on the floor. They followed it to the art room. Inside, a younger student was holding the jacket. He had found it in the hall and wanted to return it, but he did not know whose it was. Dana thanked him and ran back to the stage. When the music started, she smiled at Noor. They had made it just in time.',
+    rule: 'שימי לב מי עושה כל פעולה ולמילים שמספרות על סדר האירועים, כמו before ו־when.',
+    items: questions([
+      ['Why did Dana need her jacket?', 'It was for the first dance', 'She was cold', 'She wanted to paint it', 'חפשי את המשפט השני.', 'דנה הייתה צריכה את הז׳קט לריקוד הראשון.'],
+      ['What helped them find the jacket?', 'A line of glitter', 'A text message', 'A loud voice', 'מה נור הבחינה בו על הרצפה?', 'הן עקבו אחרי פס דק של נצנצים.'],
+      ['Why did the student keep the jacket with him?', 'He wanted to return it', 'He wanted to wear it', 'He wanted to hide it', 'חפשי את המילים found ו־return.', 'התלמיד מצא את הז׳קט במסדרון ורצה להחזיר אותו.'],
+      ['What does “just in time” mean here?', 'They arrived before it was too late', 'They missed the show', 'They arrived an hour early', 'מה קרה מיד אחרי שדנה רצה לבמה?', 'הן הגיעו ברגע האחרון, כשהמוזיקה כבר עמדה להתחיל.']
+    ])
+  },
+  {
+    id: 'arcade', world: 'reading', title: 'המכונה שנדלקה בלילה', textTitle: 'The Midnight Arcade',
+    passage: 'A game shop in town had a broken arcade machine. For weeks, nobody touched it. Then Ben saw a bright message on its screen: “Player two needed.” He asked Aya to join him. Each player could open doors for the other, but neither could finish alone. On their third try, they stopped rushing and started talking. Aya described what she saw, and Ben waited for her signal. They reached the last room together. The screen showed their score and a new message: “Good teams listen.”',
+    rule: 'חפשי בקטע מה השתנה בין ההתחלה לסוף. זה עוזר למצוא את הרעיון המרכזי.',
+    items: questions([
+      ['What did Ben see on the screen?', 'A message asking for a second player', 'A map of the town', 'A list of shops', 'חפשי את המילים Player two needed.', 'ההודעה אמרה שהמשחק צריך שחקן שני.'],
+      ['Why did Ben ask Aya to join?', 'The game needed two players', 'He wanted to leave', 'Aya owned the shop', 'מה המשחק ביקש לפני שאיה הגיעה?', 'המשחק הצריך שחקן נוסף, ולכן בן הזמין את איה.'],
+      ['What changed on their third try?', 'They started talking and listening', 'They moved faster', 'They found a different machine', 'חפשי את המשפט שמתחיל ב־On their third try.', 'הם הפסיקו למהר והתחילו לדבר זה עם זו.'],
+      ['What is the main idea of the story?', 'Listening helps a team succeed', 'Old machines always work', 'Games are better alone', 'איזה מסר הופיע על המסך בסוף?', 'המסר האחרון והדרך שבה ניצחו מראים שכדאי להקשיב לחברי הצוות.']
+    ])
+  },
+  {
+    id: 'stage-words', world: 'vocab', title: 'מילים מאחורי הקלעים',
+    rule: 'נסי להבין את המילה לפי מה שקורה במשפט. לפעמים מילה שכבר מוכרת לך נותנת את הרמז הכי טוב.',
+    example: 'The audience clapped. · הקהל מחא כפיים.',
+    items: questions([
+      ['The ___ clapped after the song.', 'audience', 'costume', 'screen', 'מי יכול למחוא כפיים אחרי שיר?', 'Audience פירושו קהל. האנשים בקהל מחאו כפיים.'],
+      ['We need to ___ before the show.', 'practice', 'forget', 'borrow', 'מה עוזר להגיע מוכנים למופע?', 'Practice פירושו להתאמן או לתרגל.'],
+      ['The blue ___ was part of her stage outfit.', 'jacket', 'audience', 'message', 'Outfit פירושו תלבושת. מה אפשר ללבוש?', 'Jacket הוא ז׳קט, פריט שאפשר ללבוש כחלק מהתלבושת.'],
+      ['Her voice was very ___, so everyone could hear.', 'loud', 'empty', 'narrow', 'כולם הצליחו לשמוע.', 'Loud פירושו חזק או רועש.'],
+      ['The show will ___ at eight.', 'begin', 'carry', 'collect', 'השעה שמופיעה מציינת מתי המופע מתחיל.', 'Begin פירושו להתחיל.']
+    ])
+  },
+  {
+    id: 'quest-words', world: 'vocab', title: 'מילים של משימות ותעלומות',
+    rule: 'קראי את המשפט השלם אחרי כל בחירה וראי אם המילה שבחרת באמת מתאימה למה שקורה בו.',
+    example: 'We followed a clue to the door. · עקבנו אחרי רמז עד לדלת.',
+    items: questions([
+      ['The note gave us a ___ about where to look.', 'clue', 'habit', 'mirror', 'מה יכול לעזור לנו לדעת איפה לחפש?', 'Clue הוא רמז. הפתק נתן רמז איפה לחפש.'],
+      ['Can you ___ this problem with me?', 'solve', 'wear', 'invite', 'מה עושים עם בעיה?', 'Solve פירושו לפתור. Solve a problem פירושו לפתור בעיה.'],
+      ['Please ___ my pencil after class.', 'return', 'discover', 'listen', 'העיפרון שייך למי שמדבר והוא רוצה אותו בחזרה.', 'Return כאן פירושו להחזיר.'],
+      ['The door was ___, so we needed a key.', 'locked', 'empty', 'quiet', 'למה צריך מפתח?', 'Locked פירושו נעול. צריך מפתח כדי לפתוח.'],
+      ['We worked ___ to finish the level.', 'together', 'yesterday', 'outside', 'איזו מילה אומרת שעבדנו כצוות?', 'Together פירושו יחד.']
+    ])
+  }
+];
+
+const prizes = [
+  {id: 'mic', icon: '🎤', title: 'מיקרופון במה', cost: 30},
+  {id: 'gloss', icon: '💄', title: 'גלוס ניאון', cost: 45},
+  {id: 'portal', icon: '🪩', title: 'כדור דיסקו', cost: 65},
+  {id: 'crystal', icon: '🔮', title: 'כדור מסתורי', cost: 90}
+];
+</script>
+  <script>const storageKey = 'wordquest-v1';
+const defaults = { name: '', phone: '', best: {}, total: 0, coins: 0, owned: [], equipped: '', round: null };
+let data = { ...defaults };
+try {
+  data = { ...defaults, ...JSON.parse(localStorage.getItem(storageKey) || '{}') };
+} catch { /* The app remains playable in memory. */ }
+
+const main = document.querySelector('main');
+const lessonById = Object.fromEntries(lessons.map(lesson => [lesson.id, lesson]));
+const recommendationOrder = ['be', 'verb-past', 'simple', 'station', 'now', 'stage-words', 'past', 'backstage', 'verb-three', 'future', 'quest-words', 'arcade'];
+const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
+const action = (label, attrs, style = '') => '<button type="button" class="action ' + style + '" ' + attrs + '>' + label + '</button>';
+const english = content => '<span dir="ltr" lang="en">' + escapeHtml(content) + '</span>';
+const passMark = lesson => Math.ceil(lesson.items.length * 0.6);
+const cleared = lesson => (data.best[lesson.id] ?? -1) >= passMark(lesson);
+const completed = () => lessons.filter(cleared).length;
+const choiceOrder = [0, 1, 2];
+let page = 'home';
+let filter = '';
+let active = null;
+let result = null;
+let notice = '';
+let storageFailed = false;
+
+function save() {
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(data));
+  } catch {
+    storageFailed = true;
+  }
+}
+
+function recommendation() {
+  const ordered = recommendationOrder.map(id => lessonById[id]);
+  return lessonById[data.round?.id] || ordered.find(lesson => !cleared(lesson))
+    || ordered.find(lesson => data.best[lesson.id] < lesson.items.length) || ordered[0];
+}
+
+function header(title, copy) {
+  return '<div class="page-head"><h1>' + title + '</h1>' + (copy ? '<p class="muted">' + copy + '</p>' : '') + '</div>';
+}
+
+function stats() {
+  return '<div class="stats">' + [
+    ['⚡', data.total, 'נקודות שנצברו'],
+    ['✓', completed() + '/' + lessons.length, 'משימות שעברתי'],
+    ['✧', data.owned.length, 'פריטים שאספתי']
+  ].map(([icon, value, label]) => '<div class="stat"><span aria-hidden="true">' + icon + '</span><div><b>' + value + '</b><small>' + label + '</small></div></div>').join('') + '</div>';
+}
+
+function home() {
+  const lesson = recommendation();
+  const resume = data.round?.id === lesson.id;
+  return '<div class="greeting"><div><h1>היי' + (data.name ? ', <bdi>' + escapeHtml(data.name) + '</bdi>' : '!') +
+    '</h1><p class="muted">מה בא לך לשחק היום?</p></div></div>' +
+    '<section class="daily"><div class="daily-copy"><span class="eyebrow"><span aria-hidden="true">✦</span>' + (resume ? 'המשימה שלך פתוחה' : 'מומלץ בשבילך') + '</span>' +
+    '<h2>' + lesson.title + '</h2><p>' + worlds[lesson.world].name + ' · ' + lesson.items.length + ' שאלות</p>' +
+    action(resume ? 'להמשיך במשימה' : 'מתחילות לשחק', 'data-lesson="' + lesson.id + '"', 'luminous') +
+    '</div><div class="hero-art" aria-hidden="true"><div class="ring"></div><div class="ring second"></div><span class="spark one">✦</span><span class="spark two">✦</span><span class="spark three">✧</span><div class="keys"><span class="tile">A</span><span class="tile">✦</span><span class="tile">Z</span></div></div></section>' +
+    '<section class="section"><div class="section-header"><h2>עולמות משחק</h2><button type="button" class="link-button" data-nav="learn">כל המשימות</button></div><div class="world-grid">' +
+    Object.entries(worlds).map(([id, world]) => '<button type="button" class="world-card ' + world.theme + '" data-world="' + id + '"><span class="world-icon" aria-hidden="true">' + world.icon + '</span><h3>' + world.name + '</h3><span dir="ltr" lang="en">' + world.en + '</span></button>').join('') +
+    '</div></section><section class="section"><div class="section-header"><h2>ההתקדמות שלי</h2></div>' + stats() + '</section>';
+}
+
+function missionList(group) {
+  return '<div class="mission-list">' + group.map(lesson => {
+    const status = data.round?.id === lesson.id ? 'להמשיך' : cleared(lesson) ? '✓ עברת' : lesson.items.length + ' שאלות';
+    return '<button type="button" class="mission" data-lesson="' + lesson.id + '"><span>' + lesson.title + '</span><small>' + status + '</small></button>';
+  }).join('') + '</div>';
+}
+
+function learn() {
+  const world = worlds[filter];
+  if (world) {
+    return '<div class="narrow"><button type="button" class="link-button arrowless" data-nav="learn">כל עולמות המשחק</button>' +
+      header(world.name, world.intro) + missionList(lessons.filter(lesson => lesson.world === filter)) + '</div>';
+  }
+  return header('משחקים', 'בחרי משימה קצרה והתחילי בקצב שלך.') + Object.entries(worlds).map(([id, info]) =>
+    '<section class="world-block ' + info.theme + '"><h2><span class="world-icon" aria-hidden="true">' + info.icon +
+    '</span>' + info.name + '</h2>' + missionList(lessons.filter(lesson => lesson.world === id)) + '</section>').join('');
+}
+
+function passage(lesson, collapsible) {
+  if (!lesson.passage) return '';
+  const contents = '<p lang="en" dir="ltr">' + escapeHtml(lesson.passage) + '</p>';
+  return collapsible ? '<details class="passage" data-passage><summary>' + english(lesson.textTitle) + ' · פתיחת הסיפור</summary>' + contents + '</details>'
+    : '<div class="passage"><h2 lang="en" dir="ltr">' + lesson.textTitle + '</h2>' + contents + '</div>';
+}
+
+function rule(lesson) {
+  return '<div class="rule"><p>' + lesson.rule + '</p>' +
+    (lesson.example ? '<p dir="auto">' + escapeHtml(lesson.example) + '</p>' : '') + '</div>';
+}
+
+function briefing() {
+  return '<div class="narrow">' + header(active.title, worlds[active.world].name) + '<section class="paper"><h2>' +
+    (active.passage ? 'קודם קוראות' : 'כלל קצר לפני שמתחילות') + '</h2>' + rule(active) + passage(active, false) +
+    '<div class="action-row">' + action('לשאלות', 'data-begin') + action('לכל המשימות', 'data-nav="learn"', 'secondary') + '</div></section></div>';
+}
+
+function quiz() {
+  const round = data.round;
+  const item = active.items[round.index];
+  const solved = round.solved;
+  return '<div class="narrow">' + header(active.title, worlds[active.world].name) + '<section class="paper">' +
+    '<div class="quiz-meta"><span>שאלה ' + (round.index + 1) + ' מתוך ' + active.items.length + '</span><span>' + round.score + ' בניסיון ראשון</span></div>' +
+    '<progress aria-label="התקדמות במשימה" value="' + (round.index + Number(solved)) + '" max="' + active.items.length + '"></progress>' +
+    passage(active, true) + '<p class="prompt" id="prompt" tabindex="-1" dir="ltr" lang="en">' + escapeHtml(item.prompt) + '</p>' +
+    '<div class="choices" role="group" aria-labelledby="prompt">' + round.orders[round.index].map(index => {
+      const wrong = round.wrong.includes(index);
+      const type = solved && index === 0 ? 'correct' : wrong ? 'wrong' : '';
+      return '<button class="choice ' + type + '" type="button" lang="en" dir="ltr" data-choice="' + index + '"' +
+        (wrong || solved ? ' disabled' : '') + '>' + escapeHtml(item.choices[index]) + '</button>';
+    }).join('') + '</div><div class="answer-feedback ' + (solved ? 'success' : round.wrong.length ? 'try' : '') +
+    '" id="feedback" tabindex="-1" role="status">' + (solved ? '<b>בדיוק!</b> ' + item.why :
+      round.wrong.length ? '<b>נסי שוב.</b> ' + item.hint : round.hint ? '<b>רמז.</b> ' + item.hint : '') + '</div>' +
+    (solved ? '<div class="action-row">' + action(round.index + 1 === active.items.length ? 'לסיכום המשימה' : 'לשאלה הבאה', 'data-next') + '</div>'
+      : '<details class="hint"><summary>הכלל במשימה הזאת</summary>' + rule(active) + '</details>' +
+        '<button type="button" class="link-button" data-hint>רמז לשאלה</button>') + '</section></div>';
+}
+
+function finishView() {
+  const success = result.score >= passMark(active);
+  const suggested = recommendation();
+  return '<div class="narrow paper result"><span class="result-icon" aria-hidden="true">' + (success ? '🏆' : '✦') + '</span>' +
+    '<h1>' + (success ? 'משימה עברה!' : 'סיימת את התרגול!') + '</h1><p><strong>' + active.title +
+    '</strong> · ' + result.score + ' מתוך ' + active.items.length + ' תשובות נכונות בניסיון הראשון.</p><p>' +
+    (result.earned ? 'הרווחת <strong>' + result.earned + ' נקודות</strong> לאוסף שלך.' :
+      'שיפור השיא האישי יוסיף נקודות לאוסף שלך.') + '</p>' +
+    '<div class="action-row">' + (success ? action('לשתף את ההצלחה', 'data-share') +
+      (data.phone ? action('לשלוח בוואטסאפ להורה', 'data-whatsapp', 'secondary') : '') : '') +
+    action('לשחק שוב', 'data-lesson="' + active.id + '"', 'plain') +
+    action(suggested.id === active.id ? 'לכל המשימות' : 'למשימה המומלצת',
+      suggested.id === active.id ? 'data-nav="learn"' : 'data-lesson="' + suggested.id + '"', success ? 'secondary' : '') +
+    '</div><p class="status" id="share-status" role="status"></p></div>';
+}
+
+function progressView() {
+  return header('ההתקדמות שלי', 'כל שיפור קטן מצטבר.') + stats() +
+    '<section class="section paper"><div class="section-header"><h2>שיאים אישיים</h2></div>' +
+    (Object.keys(data.best).length ? '<div class="mission-list">' + lessons.filter(lesson => data.best[lesson.id] !== undefined).map(lesson =>
+      '<button type="button" class="mission" data-lesson="' + lesson.id + '"><span>' + lesson.title + '</span><small>' +
+      data.best[lesson.id] + ' / ' + lesson.items.length + '</small></button>').join('') + '</div>'
+      : '<p class="muted">כשתסיימי משימה, השיא הראשון שלך יופיע כאן.</p>') + '</section>';
+}
+
+function rewards() {
+  return header('חנות הפרסים', 'השתמשי בנקודות כדי לאסוף פריטים ולעצב את הפרופיל שלך.') +
+    '<p class="status" role="status" tabindex="-1">' + (notice || 'יתרה לשימוש · ' + data.coins + ' נקודות') + '</p><div class="prize-grid">' +
+    prizes.map(prize => {
+      const owned = data.owned.includes(prize.id);
+      const equipped = data.equipped === prize.id;
+      return '<article class="paper prize"><span class="prize-icon" aria-hidden="true">' + prize.icon + '</span><h2>' + prize.title + '</h2><p class="muted">' +
+        (owned ? 'באוסף שלך' : prize.cost + ' נקודות') + '</p>' +
+        action(equipped ? 'בשימוש' : owned ? 'לבחור לפרופיל' : 'לקנות', 'data-prize="' + prize.id + '"' + (equipped || !owned && data.coins < prize.cost ? ' disabled' : ''), owned ? 'secondary' : '') +
+        '</article>';
+    }).join('') + '</div>';
+}
+
+function settings() {
+  return '<div class="narrow">' + header('הפרופיל שלי', 'השם, ההתקדמות והמספר נשמרים בדפדפן הזה.') +
+    '<form class="paper form"><label>איך לקרוא לך?<input id="nickname" maxlength="24" autocomplete="off" placeholder="השם או הכינוי שלי" value="' + escapeHtml(data.name) + '"></label>' +
+    '<label>טלפון של ההורה לשיתוף בוואטסאפ (רשות)<input type="tel" id="phone" dir="ltr" autocomplete="off" placeholder="050-1234567" value="' +
+    (data.phone ? '+' + escapeHtml(data.phone) : '') + '" aria-describedby="phone-help"></label><p id="phone-help" class="muted">אפשר להכניס מספר ישראלי או מספר עם קידומת בינלאומית. אחרי משימה מוצלחת תוכלי לפתוח הודעה ולשלוח אותה בוואטסאפ.</p>' +
+    '<button class="action" type="submit">לשמור</button><p class="status" id="settings-status" role="status"></p></form></div>';
+}
+
+const views = {home, learn, briefing, quiz, result: finishView, progress: progressView, rewards, settings};
+
+function render(focus = '') {
+  const openStory = !!main.querySelector('[data-passage][open]');
+  document.getElementById('balance').textContent = data.coins;
+  document.getElementById('avatar').textContent = prizes.find(prize => prize.id === data.equipped)?.icon || '🎧';
+  document.querySelectorAll('.navigation button').forEach(button => {
+    const selected = button.dataset.nav === page || (['briefing', 'quiz', 'result'].includes(page) && button.dataset.nav === 'learn');
+    if (selected) button.setAttribute('aria-current', 'page');
+    else button.removeAttribute('aria-current');
+  });
+  main.innerHTML = views[page]() + (storageFailed ? '<p class="status">הדפדפן לא מאפשר שמירה. ההתקדמות זמינה כל עוד המסך פתוח.</p>' : '');
+  if (openStory && page === 'quiz') main.querySelector('[data-passage]')?.setAttribute('open', '');
+  if (focus) main.querySelector(focus)?.focus();
+}
+
+function go(destination, world = '') {
+  page = destination;
+  filter = world;
+  notice = '';
+  render();
+  window.scrollTo(0, 0);
+  main.focus({ preventScroll: true });
+}
+
+function enter(lesson) {
+  active = lesson;
+  if (data.round?.id === lesson.id) {
+    go('quiz');
+    return;
+  }
+  go('briefing');
+}
+
+function begin() {
+  if (data.round && data.round.id !== active.id &&
+    !window.confirm('יש משימה פתוחה. להתחיל משימה חדשה ולוותר על הסיבוב הפתוח?')) return;
+  data.round = {
+    id: active.id, index: 0, score: 0, wrong: [], solved: false, hint: false,
+    orders: active.items.map(() => {
+      const order = [...choiceOrder];
+      for (let index = order.length - 1; index > 0; index--) {
+        const other = Math.floor(Math.random() * (index + 1));
+        [order[index], order[other]] = [order[other], order[index]];
+      }
+      return order;
+    })
+  };
+  save();
+  go('quiz');
+}
+
+function choose(index) {
+  const round = data.round;
+  if (round.solved || round.wrong.includes(index)) return;
+  if (index === 0) {
+    round.solved = true;
+    if (!round.wrong.length) round.score++;
+  } else {
+    round.wrong.push(index);
+  }
+  save();
+  render('#feedback');
+}
+
+function advance() {
+  const round = data.round;
+  if (!round.solved) return;
+  if (round.index + 1 < active.items.length) {
+    Object.assign(round, {index: round.index + 1, wrong: [], solved: false, hint: false});
+    save();
+    render('#prompt');
+    return;
+  }
+  const previous = data.best[active.id] ?? 0;
+  const earned = Math.max(0, round.score - previous) * 5 +
+    (round.score >= passMark(active) && previous < passMark(active) ? 10 : 0);
+  result = { score: round.score, earned };
+  data.best[active.id] = Math.max(previous, round.score);
+  data.coins += earned;
+  data.total += earned;
+  data.round = null;
+  save();
+  go('result');
+}
+
+function buyOrEquip(id) {
+  const prize = prizes.find(item => item.id === id);
+  if (!prize) return;
+  if (!data.owned.includes(id)) {
+    if (data.coins < prize.cost) return;
+    data.coins -= prize.cost;
+    data.owned.push(id);
+  }
+  data.equipped = id;
+  notice = prize.title + ' מופיע עכשיו בפרופיל שלך.';
+  save();
+  render('.status');
+}
+
+function normalizePhone(input) {
+  const raw = input.trim().replace(/[\s()-]/g, '');
+  if (!raw) return '';
+  if (/^0[2-9]\d{7,8}$/.test(raw)) return '972' + raw.slice(1);
+  if (/^\+[1-9]\d{7,14}$/.test(raw)) return raw.slice(1);
+  return null;
+}
+
+function shareText() {
+  return 'יש לי הישג ב־WordQuest! עברתי את המשימה ״' + active.title + '״ עם ' +
+    result.score + ' מתוך ' + active.items.length + ' תשובות נכונות בניסיון הראשון. ✨';
+}
+
+async function share() {
+  const message = shareText();
+  const status = document.getElementById('share-status');
+  try {
+    if (navigator.share) {
+      await navigator.share({ text: message });
+      return;
+    }
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(message);
+      status.textContent = 'ההודעה הועתקה. אפשר להדביק אותה בהודעה להורה.';
+      return;
+    }
+  } catch (error) {
+    if (error.name === 'AbortError') return;
+  }
+  window.prompt('אפשר להעתיק ולשלוח את ההודעה', message);
+}
+
+document.addEventListener('click', event => {
+  const button = event.target.closest('button');
+  if (!button || button.disabled) return;
+  const flags = button.dataset;
+  if (flags.nav) go(flags.nav);
+  else if (flags.world) go('learn', flags.world);
+  else if (flags.lesson) enter(lessonById[flags.lesson]);
+  else if ('begin' in flags) begin();
+  else if ('choice' in flags) choose(Number(flags.choice));
+  else if ('next' in flags) advance();
+  else if ('hint' in flags) {
+    data.round.hint = true;
+    save();
+    render('#feedback');
+  } else if (flags.prize) buyOrEquip(flags.prize);
+  else if ('share' in flags) void share();
+  else if ('whatsapp' in flags && data.phone) {
+    window.open('https://wa.me/' + data.phone + '?text=' + encodeURIComponent(shareText()), '_blank', 'noopener,noreferrer');
+  }
+});
+
+main.addEventListener('submit', event => {
+  if (page !== 'settings') return;
+  event.preventDefault();
+  const phoneField = document.getElementById('phone');
+  const phone = normalizePhone(phoneField.value);
+  const status = document.getElementById('settings-status');
+  if (phone === null) {
+    status.textContent = 'בדקי את המספר או הוסיפי קידומת בינלאומית שמתחילה ב־+.';
+    phoneField.focus();
+    return;
+  }
+  data.name = document.getElementById('nickname').value.trim().slice(0, 24);
+  data.phone = phone;
+  save();
+  status.textContent = storageFailed ? 'השינויים יחולו בזמן שהמסך פתוח.' : 'ההגדרות נשמרו.';
+});
+
+render();
+</script>
+</body>
+</html>
+
