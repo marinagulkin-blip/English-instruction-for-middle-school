@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f8f6ff">
+  <meta name="theme-color" content="#140d20">
   <meta name="description" content="משחקוני אנגלית לכיתה ח׳ עם משימות קצרות, הסברים בעברית ופרסים.">
   <title>WordQuest — אנגלית במשחק</title>
   <style>:root {
@@ -190,6 +190,142 @@ progress::-moz-progress-bar { background: #8146e6; }
   .dictation-feature { gap: 8px; }
   .dictation-feature .action { padding-inline: 10px; }
 }
+
+:root {
+  color-scheme: dark;
+  --paper: #100d17;
+  --ink: #f8f5fc;
+  --muted: #c6bbd2;
+  --line: #44364f;
+  --purple: #ceafff;
+  --deep: #20142e;
+  --lime: #e1fc76;
+  --panel: #1c1526;
+  --lift: #272032;
+  --art-hero: url("stage.webp");
+  --art-worlds: url("world-tiles.webp");
+}
+body { background: radial-gradient(ellipse at 26% 0%, #251735 0, transparent 530px), var(--paper); }
+.topbar { background: #130e1af2; border-color: #392b45; }
+.top-inner { padding-block: 10px; }
+.brand { font-size: 24px; letter-spacing: -.075em; text-transform: uppercase; gap: 10px; }
+.brand > span:last-child span { color: #e7d8fc; }
+.brand-icon { width: 38px; height: 38px; border-radius: 50%; background: #291d36; box-shadow: none; color: var(--lime); border: 1px solid #645474; rotate: 0deg; }
+.balance, .profile { background: #251b30; border-color: #493953; border-radius: 999px; color: var(--lime); }
+.profile { background: #2c2039; }
+.skip:focus { background: var(--lime); color: #17131a; }
+main { padding-top: 22px; }
+h1, h2, h3 { letter-spacing: -.036em; }
+.greeting { margin-bottom: 13px; }
+.greeting h1 { font-size: clamp(1.6rem, 4vw, 2.22rem); }
+.daily { position: relative; display: flex; align-items: end; min-height: 310px; isolation: isolate; border-radius: 21px; border: 1px solid #74568e; box-shadow: none; background: #21132e; }
+.hero-art { position: absolute; inset: 0; width: 100%; height: 100%; display: block; background: var(--art-hero) left 44% / cover no-repeat; }
+.hero-art::before { content: none; }
+.hero-art::after { content: ''; position: absolute; inset: 0; background: linear-gradient(270deg, #130c1ceb 0%, #170b24cb 22%, #170b2444 54%, transparent 72%), linear-gradient(0deg, #170b2488, transparent 55%); }
+.daily-copy { max-width: 52%; padding: 28px 34px 32px; }
+.daily h2 { margin: 10px 0 0; max-width: 13ch; font-size: clamp(1.85rem, 4.6vw, 3.55rem); line-height: 1.02; text-wrap: balance; }
+.daily .action { margin-top: 18px; }
+.eyebrow { color: var(--lime); letter-spacing: .015em; }
+.section { margin-top: 24px; }
+.section-header { margin-bottom: 11px; }
+.world-grid { gap: 12px; }
+.purple { --accent: #382951; --accent-ink: #d6baff; }
+.pink { --accent: #512743; --accent-ink: #ffc1ef; }
+.blue { --accent: #27385b; --accent-ink: #b9d0ff; }
+.lime { --accent: #3a482f; --accent-ink: #e1fc76; }
+.world-card { position: relative; isolation: isolate; overflow: hidden; display: flex; align-items: end; min-height: 0; padding: 14px; aspect-ratio: 1.23; color: white; background: #150e1d; border: 1px solid var(--line); border-radius: 16px; box-shadow: none; }
+.world-card:hover, .mission:hover { border-color: #b08bdb; }
+.world-card:hover .world-art { scale: 1.045; }
+.world-art { background: #190f22 var(--art-worlds) var(--tile-x, 0%) var(--tile-y, 0%) / 200% 200% no-repeat; }
+.art-verbs { --tile-x: 100%; }
+.art-reading { --tile-y: 100%; }
+.art-vocab { --tile-x: 100%; --tile-y: 100%; }
+.world-card .world-art { position: absolute; inset: 0 0 10%; z-index: -2; transition: scale .24s ease; }
+.world-card::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(0deg, #120a1a 4%, #120a1ac4 29%, transparent 64%); }
+.world-title { font-weight: 800; font-size: clamp(.95rem, 2.7vw, 1.21rem); line-height: 1.18; }
+.world-card > .world-play { margin-inline-start: auto; color: var(--accent-ink); font-size: 1rem; }
+.world-header, .lesson-heading { display: flex; align-items: center; gap: 14px; margin: 0 0 14px; }
+.world-header .world-art, .lesson-heading .world-art { width: 82px; height: 82px; flex: 0 0 auto; border-radius: 13px; border: 1px solid var(--line); }
+.world-header h1, .lesson-heading h1 { font-size: clamp(1.7rem, 4.5vw, 2.65rem); }
+.lesson-heading .page-head { margin: 0; }
+.stat, .paper, .mission { background: var(--panel); border-color: var(--line); }
+.stat span:first-child, .prize-icon, .prize:nth-child(2n) .prize-icon { background: #38264b; }
+.paper { border-radius: 18px; }
+.page-head { margin-bottom: 15px; }
+.page-head p { max-width: 55ch; }
+.navigation { background: #17101fec; backdrop-filter: blur(15px); border-color: #44334f; box-shadow: 0 -4px 22px #08060c95; }
+.navigation button { color: #c9b9d5; }
+.navigation button[aria-current="page"] { background: #322541; color: var(--lime); }
+.navigation button span { font-size: 22px; font-weight: 800; }
+.action { background: #d1b2f9; color: #21152b; border-radius: 10px; }
+.action.luminous { background: var(--lime); color: #17200b; box-shadow: 0 3px 16px #baf83a35; }
+.action.secondary { background: #3b2a50; border-color: #685280; color: #f1e4ff; }
+.action.plain { background: transparent; border-color: #725b87; color: #e9d6ff; }
+.link-button { color: #dec5ff; padding-inline: 5px; }
+.mission { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; border-radius: 12px; }
+.mission-play { color: var(--lime); }
+.rule, .passage { background: #2a2035; }
+.passage { background: #251d34; border-inline-start: 2px solid #b899ea; }
+.passage h2 { font-size: 1.26rem; }
+.quiz-card { background: linear-gradient(150deg, #241a30 0%, var(--panel) 62%); }
+progress { background: #392b47; }
+progress::-webkit-progress-bar { background: #392b47; }
+progress::-webkit-progress-value { background: #cfff73; }
+progress::-moz-progress-bar { background: #cfff73; }
+.choice { display: flex; justify-content: space-between; align-items: center; gap: 10px; color: var(--ink); background: #21182c; border-color: #5c486e; min-height: 51px; }
+.choice span:last-child { color: #be9fe1; font-size: 1.15rem; }
+.choice:hover:not(:disabled) { background: #3a2a4d; border-color: #d5afff; }
+.choice.correct, .answer-feedback.success { background: #243820; border-color: #a5d867; color: #d7ffae; }
+.choice.correct span:last-child { color: #caff94; }
+.choice.wrong, .answer-feedback.try { background: #442333; border-color: #e28aaf; color: #ffd3e4; }
+.choice.wrong span:last-child { color: #ffc0da; }
+.answer-feedback { background: #3b2b4f; }
+.quiz-tools { display: flex; flex-wrap: wrap; align-items: start; gap: 6px 14px; margin-top: 10px; }
+.quiz-tools details[open] { width: 100%; }
+.quiz-tools details { margin-top: 8px; }
+.quiz-tools .link-button { min-width: 70px; }
+.result { background: radial-gradient(ellipse at 12% 0%, #3b2351 0, transparent 65%), var(--panel); }
+.result-icon { background: #302243; color: var(--lime); border: 1px solid #776183; }
+.form input { background: #17111f; border-color: #665174; }
+.status { color: #e7ccff; }
+.status:empty { display: none; }
+.dictation-feature { --accent: #3a284e; border-color: #5e4674; background: linear-gradient(110deg, #251931, #2d1f3c); margin-block: 12px; }
+.dictation-feature .world-icon { color: #f0e0ff; border: 1px solid #604770; border-radius: 50%; }
+.dictation-feature p { color: #d6c7e1; }
+.dictation-table thead { background: #322340; color: #ead8ff; }
+.dictation-table tbody tr:nth-child(even) { background: #281e34; }
+.dictation-review-fields > div { background: #2a2035; }
+.dictation-right { color: #c7f590; }
+.dictation-review-needed { color: #ffb6d9; }
+.dictation-list-summary { min-height: 44px; padding: 7px 0; font-size: 1.12rem; }
+.dictation-list-summary::marker { color: var(--lime); }
+@media (max-width: 740px) {
+  .daily { min-height: 280px; }
+  .daily-copy { max-width: 59%; padding: 21px; }
+  .world-card { aspect-ratio: 1.32; }
+}
+@media (max-width: 490px) {
+  main { width: calc(100% - 26px); padding-top: 17px; }
+  .top-inner { padding-inline: 13px; }
+  .daily { min-height: 277px; }
+  .daily-copy { width: 100%; max-width: 100%; padding: 16px; }
+  .daily h2 { font-size: clamp(1.74rem, 7.1vw, 2.22rem); line-height: 1.08; }
+  .daily .action { margin-top: 11px; }
+  .hero-art { background-size: auto 114%; background-position: 45% 28%; }
+  .hero-art::after { background: linear-gradient(0deg, #140c20 1%, #140c20db 25%, #140c20a3 43%, transparent 81%); }
+  .world-card { padding: 10px; }
+  .world-card .world-art { bottom: 8%; }
+  .world-header .world-art, .lesson-heading .world-art { width: 65px; height: 65px; }
+  .dictation-feature { gap: 8px; padding: 9px; }
+  .dictation-feature .action { padding-inline: 11px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .choice.correct { animation: correct-pop .24s ease-out; }
+  .result-icon { animation: prize-pop .42s cubic-bezier(.2,.8,.3,1.3) both; }
+  .action:active, .world-card:active { transform: translateY(2px); }
+  @keyframes correct-pop { from { transform: scale(.985); } to { transform: scale(1); } }
+  @keyframes prize-pop { from { opacity: .2; transform: translateY(10px) scale(.72); } to { opacity: 1; transform: none; } }
+}
 </style>
 </head>
 <body>
@@ -206,15 +342,15 @@ progress::-moz-progress-bar { background: #8146e6; }
   <main id="main" tabindex="-1"></main>
   <nav class="navigation" aria-label="ניווט ראשי">
     <button type="button" data-nav="home"><span aria-hidden="true">⌂</span>בית</button>
-    <button type="button" data-nav="learn"><span aria-hidden="true">▦</span>משחקים</button>
+    <button type="button" data-nav="learn"><span aria-hidden="true">♟</span>משחקים</button>
     <button type="button" data-nav="progress"><span aria-hidden="true">▥</span>התקדמות</button>
-    <button type="button" data-nav="rewards"><span aria-hidden="true">✧</span>פרסים</button>
+    <button type="button" data-nav="rewards"><span aria-hidden="true">✦</span>פרסים</button>
   </nav>
   <noscript>צריך להפעיל JavaScript בדפדפן כדי לשחק.</noscript>
   <script>const worlds = {
   grammar: { name: 'דקדוק וזמנים', en: 'Grammar Lab', icon: '⚡', theme: 'purple', intro: 'משלימים משפטים ומגלים את הכלל שעובד מאחוריהם.' },
   verbs: { name: 'פעלים לא רגילים', en: 'Verb Remix', icon: '🎛️', theme: 'pink', intro: 'בסיס, עבר וצורה שלישית בקצב שלך.' },
-  reading: { name: 'הבנת הנקרא', en: 'Mystery Files', icon: '🔍', theme: 'blue', intro: 'קוראים סיפורים קצרים ומחפשים רמזים בין השורות.' },
+  reading: { name: 'תעלומות וקריאה', en: 'Mystery Files', icon: '🔍', theme: 'blue', intro: 'קוראים סיפורים קצרים ומחפשים רמזים בין השורות.' },
   vocab: { name: 'אוצר מילים', en: 'Word Hunt', icon: '💎', theme: 'lime', intro: 'מגלים מילים שימושיות במשחקים, במוזיקה ובחיי היום-יום.' }
 };
 
@@ -306,6 +442,28 @@ const lessons = [
       ['She has ___ a new song. (write)', 'written', 'wrote', 'writed', 'הצורה השלישית מסתיימת ב־en.', 'Write → wrote → written. כאן has written.'],
       ['We have already ___ dinner. (eat)', 'eaten', 'ate', 'eating', 'מתחיל ב־eat ומסתיים ב־en.', 'Eat → ate → eaten. כאן have eaten.'],
       ['He has ___ my notebook. (take)', 'taken', 'took', 'taked', 'צורת העבר היא took. כאן צריך צורה שלישית.', 'Take → took → taken. כאן has taken.']
+    ])
+  },
+  {
+    id: 'midnight-rehearsal', world: 'reading', title: 'חזרה אחרי חצות', textTitle: 'Rehearsal After Midnight',
+    passage: 'Ari met the new singer, Vale, halfway through rehearsals for the winter concert. Vale could sing every note but only came to the studio after sunset. One night, Ari saw an old concert photo on a noticeboard. The photo was from 1976. Vale stood in the front row, wearing the same silver ring. At the next rehearsal, Ari showed her the picture. “The song is mine,” Vale said softly. “I stopped singing it fifty years ago.” Ari moved a second microphone onto the stage. “Then tonight is your chance to sing it again.”',
+    rule: 'חפשי שני רמזים שמראים מה מיוחד בווייל. שימי לב מה ארי בוחרת לעשות כשהיא מבינה.',
+    items: questions([
+      ['When does Vale come to the studio?', 'After sunset', 'Before school', 'Only at noon', 'חפשי משפט שמתאר מתי היא מגיעה לחזרות.', 'Vale מגיעה לסטודיו רק אחרי השקיעה.'],
+      ['What connects Vale to the old photo?', 'Her face and her silver ring', 'A song title on the wall', 'The color of the microphone', 'איזה פרט ארי מזהה בתמונה משנת 1976?', 'Ari מזהה את Vale ואת הטבעת הכסופה שהיא עדיין עונדת.'],
+      ['What does Vale say about the song?', 'She stopped singing it fifty years ago', 'She heard it for the first time that night', 'Ari wrote it last week', 'חזרי למה ש־Vale אומרת אחרי שארי מראה לה את התמונה.', 'Vale אומרת שהשיר שלה ושהפסיקה לשיר אותו לפני חמישים שנה.'],
+      ['Why does Ari bring out a second microphone?', 'To give Vale a chance to sing again', 'To hide the photograph from Vale', 'To finish rehearsal without Vale', 'קראי את המשפט האחרון וחפשי את המילה chance.', 'המיקרופון השני נותן ל־Vale הזדמנות לשיר שוב את השיר שלה.']
+    ])
+  },
+  {
+    id: 'last-frequency', world: 'reading', title: 'התדר האחרון', textTitle: 'The Last Frequency',
+    passage: 'A storm cut the power just as Jules and Noa finished editing a track for their school show. A little radio on the desk kept playing. Then a voice said, “Do not open the blue door until the fourth beep.” Outside the studio, a blue door had appeared where there was usually a window. At the third beep, Noa reached for the handle, but Jules stopped her. The fourth beep sounded. Behind the door was their studio again, exactly one minute ahead. On the empty desk, Noa found a note in her own handwriting: “Next time, bring a flashlight.”',
+    rule: 'עקבי אחרי סדר האירועים והמילים before, after ו־until כדי להבין את הרמז.',
+    items: questions([
+      ['What kept working after the power went out?', 'A small radio', 'A camera', 'The lights outside', 'חפשי את המילים kept playing.', 'הרדיו הקטן המשיך לנגן אחרי הפסקת החשמל.'],
+      ['Where did the blue door appear?', 'In the place of a window', 'Under the desk', 'At the school entrance', 'בחלק הראשון כתוב מה בדרך כלל נמצא שם.', 'הדלת הכחולה הופיעה במקום שבו בדרך כלל יש חלון.'],
+      ['When did they open the door?', 'After the fourth beep', 'After the third beep', 'After the power came back', 'שימי לב להבדל בין מה שנועה כמעט עשתה לבין מה שקרה בפועל.', 'ג׳ולס עצרה את נועה והן חיכו לצפצוף הרביעי כמו שהקול ביקש.'],
+      ['Why was the note especially strange?', 'It was in Noa’s own handwriting', 'It had no words on it', 'It was hidden inside the radio', 'חפשי את הביטוי in her own handwriting.', 'נועה זיהתה את כתב היד של עצמה בפתק בגרסה העתידית של האולפן.']
     ])
   },
   {
@@ -403,22 +561,22 @@ let dictationMode = 'practice';
 
 function dictationShortcut() {
   return '<section class="dictation-feature"><span class="world-icon" aria-hidden="true">✎</span>' +
-    '<div><h2>הכנה להכתבה</h2><p>כל 20 הפעלים של המורה · ' + english('V1 · V2 · Meaning') + '</p></div>' +
+    '<div><h2>הכנה להכתבה</h2><p>כל 20 הפעלים של המורה</p></div>' +
     action('להכנה', 'data-nav="dictation"') + '</section>';
 }
 
 function dictationHub() {
-  return '<div class="narrow">' + header('הכנה להכתבה', 'כל 20 הפעלים מהרשימה של המורה לעמוד 194 ב־New Directions.') +
-    '<section class="paper dictation-intro"><h2>מתרגלות את כל הרשימה</h2><p>שמעי פועל והקלידי את צורת הבסיס, את צורת העבר ואת הפירוש בעברית. בתרגול מקבלים תיקון אחרי כל פועל.</p>' +
+  return '<div class="narrow">' + header('הכנה להכתבה', '') +
+    '<section class="paper dictation-intro"><h2>תרגול מלא</h2><p>' + english('V1 · V2 · Meaning') + ' · משוב אחרי כל פועל</p>' +
     '<div class="action-row">' + action(data.dictation.practice?.status === 'running' ? 'להמשיך בתרגול' : 'לתרגול כל 20 הפעלים', 'data-dictation-start="practice"') +
-    '</div></section><section class="paper section dictation-intro"><h2>מבחן דמה</h2><p>10 פעלים שונים נבחרים באקראי מתוך הרשימה. בסוף תקבלי ציון ותראי מה כדאי לחזק.</p>' +
+    '</div></section><section class="paper section dictation-intro"><h2>מבחן דמה</h2><p>10 פעלים באקראי · משוב בסוף</p>' +
     '<div class="action-row">' + action(data.dictation.test?.status === 'running' ? 'להמשיך במבחן' : 'להתחיל מבחן של 10 פעלים', 'data-dictation-start="test"', 'secondary') +
     (data.dictation.test?.status === 'done' ? action('לתוצאה האחרונה', 'data-dictation-result="test"', 'plain') : '') + '</div></section>' +
-    '<section class="section paper"><h2>טבלת כל הפעלים</h2><table class="dictation-table" aria-label="רשימת הפעלים להכתבה">' +
+    '<details class="section paper"><summary class="dictation-list-summary">טבלת כל הפעלים</summary><table class="dictation-table" aria-label="רשימת הפעלים להכתבה">' +
     '<thead><tr>' + dictationFields.map(label => '<th scope="col">' + english(label) + '</th>').join('') +
     '</tr></thead><tbody>' + dictationVerbs.map(([v1, v2, meaning]) => '<tr><th scope="row">' + english(v1) + '</th><td>' + english(v2) +
     '</td><td>' + meaning + '</td></tr>').join('') + '</tbody></table>' +
-    '<p class="muted dictation-note">ב־' + english('be') + ' כתבי את שתי צורות העבר. ל־' + english('read') + ' יש אותו כתיב בשתי הצורות, אבל הגייה שונה.</p></section></div>';
+    '<p class="muted dictation-note"><span lang="en" dir="ltr">New Directions</span> · עמוד 194</p><p class="muted dictation-note">ב־' + english('be') + ' כתבי את שתי צורות העבר. ב־' + english('read') + ' הכתיב זהה וההגייה שונה.</p></details></div>';
 }
 
 function currentDictation() {
@@ -610,7 +768,7 @@ try {
 
 const main = document.querySelector('main');
 const lessonById = Object.fromEntries(lessons.map(lesson => [lesson.id, lesson]));
-const recommendationOrder = ['be', 'verb-past', 'simple', 'station', 'now', 'stage-words', 'past', 'backstage', 'verb-three', 'future', 'quest-words', 'arcade'];
+const recommendationOrder = ['be', 'verb-past', 'simple', 'midnight-rehearsal', 'now', 'stage-words', 'last-frequency', 'past', 'station', 'verb-three', 'future', 'backstage', 'quest-words', 'arcade'];
 const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 const action = (label, attrs, style = '') => '<button type="button" class="action ' + style + '" ' + attrs + '>' + label + '</button>';
 const english = content => '<span dir="ltr" lang="en">' + escapeHtml(content) + '</span>';
@@ -651,36 +809,39 @@ function stats() {
   ].map(([icon, value, label]) => '<div class="stat"><span aria-hidden="true">' + icon + '</span><div><b>' + value + '</b><small>' + label + '</small></div></div>').join('') + '</div>';
 }
 
+function worldCards() {
+  return '<div class="world-grid">' + Object.entries(worlds).map(([id, world]) =>
+    '<button type="button" class="world-card ' + world.theme + '" data-world="' + id + '"><span class="world-art art-' + id +
+    '" aria-hidden="true"></span><span class="world-title">' + world.name + '</span><span class="world-play" aria-hidden="true">◂</span></button>').join('') + '</div>';
+}
+
 function home() {
   const lesson = recommendation();
   const resume = data.round?.id === lesson.id;
   return '<div class="greeting"><div><h1>היי' + (data.name ? ', <bdi>' + escapeHtml(data.name) + '</bdi>' : '!') +
-    '</h1><p class="muted">מה בא לך לשחק היום?</p></div></div>' +
-    '<section class="daily"><div class="daily-copy"><span class="eyebrow"><span aria-hidden="true">✦</span>' + (resume ? 'המשימה שלך פתוחה' : 'מומלץ בשבילך') + '</span>' +
-    '<h2>' + lesson.title + '</h2><p>' + worlds[lesson.world].name + ' · ' + lesson.items.length + ' שאלות</p>' +
+    '</h1></div></div>' +
+    '<section class="daily"><div class="hero-art" aria-hidden="true"></div><div class="daily-copy"><span class="eyebrow"><span aria-hidden="true">✦</span>' + (resume ? 'משימה פתוחה' : 'מומלץ לך') + '</span>' +
+    '<h2>' + lesson.title + '</h2>' +
     action(resume ? 'להמשיך במשימה' : 'מתחילות לשחק', 'data-lesson="' + lesson.id + '"', 'luminous') +
-    '</div><div class="hero-art" aria-hidden="true"><div class="ring"></div><div class="ring second"></div><span class="spark one">✦</span><span class="spark two">✦</span><span class="spark three">✧</span><div class="keys"><span class="tile">A</span><span class="tile">✦</span><span class="tile">Z</span></div></div></section>' + dictationShortcut() +
-    '<section class="section"><div class="section-header"><h2>עולמות משחק</h2><button type="button" class="link-button" data-nav="learn">כל המשימות</button></div><div class="world-grid">' +
-    Object.entries(worlds).map(([id, world]) => '<button type="button" class="world-card ' + world.theme + '" data-world="' + id + '"><span class="world-icon" aria-hidden="true">' + world.icon + '</span><h3>' + world.name + '</h3><span dir="ltr" lang="en">' + world.en + '</span></button>').join('') +
-    '</div></section><section class="section"><div class="section-header"><h2>ההתקדמות שלי</h2></div>' + stats() + '</section>';
+    '</div></section>' + dictationShortcut() +
+    '<section class="section"><div class="section-header"><h2>באיזה עולם משחקות?</h2></div>' + worldCards() + '</section>';
 }
 
 function missionList(group) {
   return '<div class="mission-list">' + group.map(lesson => {
     const status = data.round?.id === lesson.id ? 'להמשיך' : cleared(lesson) ? '✓ עברת' : lesson.items.length + ' שאלות';
-    return '<button type="button" class="mission" data-lesson="' + lesson.id + '"><span>' + lesson.title + '</span><small>' + status + '</small></button>';
+    return '<button type="button" class="mission" data-lesson="' + lesson.id + '"><span>' + lesson.title + '</span><small>' + status + '</small><span class="mission-play" aria-hidden="true">◂</span></button>';
   }).join('') + '</div>';
 }
 
 function learn() {
   const world = worlds[filter];
   if (world) {
-    return '<div class="narrow"><button type="button" class="link-button arrowless" data-nav="learn">כל עולמות המשחק</button>' +
-      header(world.name, world.intro) + (filter === 'verbs' ? dictationShortcut() : '') + missionList(lessons.filter(lesson => lesson.world === filter)) + '</div>';
+    return '<div class="narrow"><button type="button" class="link-button arrowless" data-nav="learn">כל העולמות</button>' +
+      '<div class="world-header ' + world.theme + '"><div class="world-art art-' + filter + '" aria-hidden="true"></div><h1>' + world.name + '</h1></div>' +
+      (filter === 'verbs' ? dictationShortcut() : '') + missionList(lessons.filter(lesson => lesson.world === filter)) + '</div>';
   }
-  return header('משחקים', 'בחרי משימה קצרה והתחילי בקצב שלך.') + Object.entries(worlds).map(([id, info]) =>
-    '<section class="world-block ' + info.theme + '"><h2><span class="world-icon" aria-hidden="true">' + info.icon +
-    '</span>' + info.name + '</h2>' + (id === 'verbs' ? dictationShortcut() : '') + missionList(lessons.filter(lesson => lesson.world === id)) + '</section>').join('');
+  return header('בחרי עולם', '') + worldCards() + dictationShortcut();
 }
 
 function passage(lesson, collapsible) {
@@ -696,16 +857,17 @@ function rule(lesson) {
 }
 
 function briefing() {
-  return '<div class="narrow">' + header(active.title, worlds[active.world].name) + '<section class="paper"><h2>' +
-    (active.passage ? 'קודם קוראות' : 'כלל קצר לפני שמתחילות') + '</h2>' + rule(active) + passage(active, false) +
-    '<div class="action-row">' + action('לשאלות', 'data-begin') + action('לכל המשימות', 'data-nav="learn"', 'secondary') + '</div></section></div>';
+  return '<div class="narrow"><div class="lesson-heading"><div class="world-art art-' + active.world +
+    '" aria-hidden="true"></div>' + header(active.title, '') + '</div><section class="paper"><h2>' +
+    (active.passage ? 'זמן לסיפור' : 'הכלל במשימה') + '</h2>' + (active.passage ? passage(active, false) : rule(active)) +
+    '<div class="action-row">' + action('לשאלות', 'data-begin') + action('לעולם המשחק', 'data-world="' + active.world + '"', 'secondary') + '</div></section></div>';
 }
 
 function quiz() {
   const round = data.round;
   const item = active.items[round.index];
   const solved = round.solved;
-  return '<div class="narrow">' + header(active.title, worlds[active.world].name) + '<section class="paper">' +
+  return '<div class="narrow">' + header(active.title, '') + '<section class="paper quiz-card">' +
     '<div class="quiz-meta"><span>שאלה ' + (round.index + 1) + ' מתוך ' + active.items.length + '</span><span>' + round.score + ' בניסיון ראשון</span></div>' +
     '<progress aria-label="התקדמות במשימה" value="' + (round.index + Number(solved)) + '" max="' + active.items.length + '"></progress>' +
     passage(active, true) + '<p class="prompt" id="prompt" tabindex="-1" dir="ltr" lang="en">' + escapeHtml(item.prompt) + '</p>' +
@@ -713,13 +875,14 @@ function quiz() {
       const wrong = round.wrong.includes(index);
       const type = solved && index === 0 ? 'correct' : wrong ? 'wrong' : '';
       return '<button class="choice ' + type + '" type="button" lang="en" dir="ltr" data-choice="' + index + '"' +
-        (wrong || solved ? ' disabled' : '') + '>' + escapeHtml(item.choices[index]) + '</button>';
+        (wrong || solved ? ' disabled' : '') + '><span>' + escapeHtml(item.choices[index]) + '</span><span aria-hidden="true">' +
+        (type === 'correct' ? '✓' : wrong ? '×' : '○') + '</span></button>';
     }).join('') + '</div><div class="answer-feedback ' + (solved ? 'success' : round.wrong.length ? 'try' : '') +
     '" id="feedback" tabindex="-1" role="status">' + (solved ? '<b>בדיוק!</b> ' + item.why :
       round.wrong.length ? '<b>נסי שוב.</b> ' + item.hint : round.hint ? '<b>רמז.</b> ' + item.hint : '') + '</div>' +
     (solved ? '<div class="action-row">' + action(round.index + 1 === active.items.length ? 'לסיכום המשימה' : 'לשאלה הבאה', 'data-next') + '</div>'
-      : '<details class="hint"><summary>הכלל במשימה הזאת</summary>' + rule(active) + '</details>' +
-        '<button type="button" class="link-button" data-hint>רמז לשאלה</button>') + '</section></div>';
+      : '<div class="quiz-tools"><details class="hint"><summary>' + (active.passage ? 'טיפ לקריאה' : 'הכלל') + '</summary>' + rule(active) + '</details>' +
+        '<button type="button" class="link-button" data-hint>✧ רמז</button></div>') + '</section></div>';
 }
 
 function finishView() {
