@@ -141,6 +141,26 @@ progress::-moz-progress-bar { background: #8146e6; }
 .form input { border: 1px solid #cdc0df; border-radius: 10px; min-height: 45px; width: 100%; padding: 9px 11px; background: #fff; color: var(--ink); }
 .form .action { justify-self: start; }
 .status { color: #5124aa; min-height: 1.6em; }
+.dictation-feature { --accent: #e2d1ff; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; margin-block: 17px 12px; border: 1px solid #decef8; border-radius: 18px; padding: 12px; background: #f0e8fe; }
+.dictation-feature h2 { font-size: clamp(1.08rem, 3vw, 1.38rem); }
+.dictation-feature p { color: #54456d; font-size: .9rem; margin-top: 4px; }
+.dictation-feature .world-icon { color: #5424b7; }
+.dictation-intro p { margin-top: 8px; }
+.dictation-table { width: 100%; border-collapse: collapse; margin-top: 14px; text-align: start; }
+.dictation-table th, .dictation-table td { padding: 9px 7px; border-bottom: 1px solid var(--line); text-align: start; overflow-wrap: anywhere; }
+.dictation-table thead { color: #5124aa; background: #f1e9fe; }
+.dictation-table tbody tr:nth-child(even) { background: #faf7ff; }
+.dictation-note { margin-top: 9px; }
+.dictation-note:empty, .dictation-form .status:empty { display: none; }
+.dictation-form, .dictation-feedback { margin-top: 17px; }
+.dictation-form .action-row { margin-top: 0; }
+.dictation-review { border-bottom: 1px solid var(--line); padding-top: 7px; margin-top: 4px; }
+.dictation-review-fields { display: grid; gap: 8px; margin-block: 11px; }
+.dictation-review-fields > div { background: #f8f5ff; padding: 8px 10px; border-radius: 10px; overflow-wrap: anywhere; }
+.dictation-review-fields dt { font-weight: 800; }
+.dictation-review-fields dd { margin: 4px 0 0; line-height: 1.5; }
+.dictation-right { color: #315f1c; font-weight: 750; }
+.dictation-review-needed { color: #87295d; font-weight: 750; }
 @media (max-width: 740px) {
   main { width: calc(100% - 30px); padding-top: 24px; }
   .top-inner { padding-inline: 15px; }
@@ -165,6 +185,10 @@ progress::-moz-progress-bar { background: #8146e6; }
   .stat { flex-direction: column; align-items: flex-start; gap: 5px; padding: 9px; }
   .stat span:first-child { flex: auto; width: 31px; height: 31px; }
   .navigation { width: 100%; border-radius: 0; }
+}
+@media (max-width: 365px) {
+  .dictation-feature { gap: 8px; }
+  .dictation-feature .action { padding-inline: 10px; }
 }
 </style>
 </head>
@@ -350,8 +374,235 @@ const prizes = [
   {id: 'crystal', icon: '🔮', title: 'כדור מסתורי', cost: 90}
 ];
 </script>
+  <script>const dictationVerbs = [
+  ['catch', 'caught', 'לתפוס', ['לתפוס', 'לקלוט']],
+  ['bring', 'brought', 'להביא', ['להביא']],
+  ['buy', 'bought', 'לקנות', ['לקנות', 'לרכוש']],
+  ['fight', 'fought', 'להילחם', ['להילחם', 'להלחם', 'להיאבק', 'להאבק', 'לריב', 'להתקוטט']],
+  ['teach', 'taught', 'ללמד', ['ללמד', 'להורות']],
+  ['think', 'thought', 'לחשוב', ['לחשוב', 'לסבור']],
+  ['understand', 'understood', 'להבין', ['להבין']],
+  ['write', 'wrote', 'לכתוב', ['לכתוב']],
+  ['make', 'made', 'להכין / לעשות', ['להכין', 'לעשות', 'ליצור', 'לייצר', 'לבנות']],
+  ['lose', 'lost', 'לאבד / להפסיד', ['לאבד', 'להפסיד']],
+  ['be', 'was / were', 'להיות', ['להיות']],
+  ['do', 'did', 'לעשות', ['לעשות', 'לבצע']],
+  ['have', 'had', 'יש ל…', ['יש ל', 'יש', 'להיות בעל', 'להיות בעלת', 'להחזיק', 'להחזיק ב', 'שיש לו', 'יש לי', 'יש לו']],
+  ['hear', 'heard', 'לשמוע', ['לשמוע']],
+  ['know', 'knew', 'לדעת / להכיר', ['לדעת', 'להכיר']],
+  ['swim', 'swam', 'לשחות', ['לשחות']],
+  ['read', 'read', 'לקרוא', ['לקרוא']],
+  ['win', 'won', 'לנצח / לזכות', ['לנצח', 'לזכות']],
+  ['shut', 'shut', 'לסגור', ['לסגור', 'לטרוק']],
+  ['feed', 'fed', 'להאכיל', ['להאכיל', 'להזין']]
+];
+
+const dictationFields = ['V1', 'V2', 'Meaning'];
+const roundLimit = { practice: dictationVerbs.length, test: 10 };
+let dictationMode = 'practice';
+
+function dictationShortcut() {
+  return '<section class="dictation-feature"><span class="world-icon" aria-hidden="true">✎</span>' +
+    '<div><h2>הכנה להכתבה</h2><p>כל 20 הפעלים של המורה · ' + english('V1 · V2 · Meaning') + '</p></div>' +
+    action('להכנה', 'data-nav="dictation"') + '</section>';
+}
+
+function dictationHub() {
+  return '<div class="narrow">' + header('הכנה להכתבה', 'כל 20 הפעלים מהרשימה של המורה לעמוד 194 ב־New Directions.') +
+    '<section class="paper dictation-intro"><h2>מתרגלות את כל הרשימה</h2><p>שמעי פועל והקלידי את צורת הבסיס, את צורת העבר ואת הפירוש בעברית. בתרגול מקבלים תיקון אחרי כל פועל.</p>' +
+    '<div class="action-row">' + action(data.dictation.practice?.status === 'running' ? 'להמשיך בתרגול' : 'לתרגול כל 20 הפעלים', 'data-dictation-start="practice"') +
+    '</div></section><section class="paper section dictation-intro"><h2>מבחן דמה</h2><p>10 פעלים שונים נבחרים באקראי מתוך הרשימה. בסוף תקבלי ציון ותראי מה כדאי לחזק.</p>' +
+    '<div class="action-row">' + action(data.dictation.test?.status === 'running' ? 'להמשיך במבחן' : 'להתחיל מבחן של 10 פעלים', 'data-dictation-start="test"', 'secondary') +
+    (data.dictation.test?.status === 'done' ? action('לתוצאה האחרונה', 'data-dictation-result="test"', 'plain') : '') + '</div></section>' +
+    '<section class="section paper"><h2>טבלת כל הפעלים</h2><table class="dictation-table" aria-label="רשימת הפעלים להכתבה">' +
+    '<thead><tr>' + dictationFields.map(label => '<th scope="col">' + english(label) + '</th>').join('') +
+    '</tr></thead><tbody>' + dictationVerbs.map(([v1, v2, meaning]) => '<tr><th scope="row">' + english(v1) + '</th><td>' + english(v2) +
+    '</td><td>' + meaning + '</td></tr>').join('') + '</tbody></table>' +
+    '<p class="muted dictation-note">ב־' + english('be') + ' כתבי את שתי צורות העבר. ל־' + english('read') + ' יש אותו כתיב בשתי הצורות, אבל הגייה שונה.</p></section></div>';
+}
+
+function currentDictation() {
+  return data.dictation[dictationMode];
+}
+
+function startDictation(mode) {
+  dictationMode = mode;
+  if (currentDictation()?.status !== 'running') {
+    const order = dictationVerbs.map((_, index) => index);
+    for (let index = order.length - 1; index > 0; index--) {
+      const other = Math.floor(Math.random() * (index + 1));
+      [order[index], order[other]] = [order[other], order[index]];
+    }
+    data.dictation[mode] = { status: 'running', order: order.slice(0, roundLimit[mode]), rows: [], draft: ['', '', ''] };
+    save();
+  }
+  go('dictationRound');
+}
+
+function dictationInput(label, index, value) {
+  const instructions = ['צורת הבסיס', 'צורת העבר', 'פירוש בעברית'];
+  const language = index < 2 ? 'lang="en" dir="ltr"' : 'lang="he" dir="rtl"';
+  return '<label for="dictation-' + index + '"><span>' + english(label) + ' · ' + instructions[index] + '</span>' +
+    '<input id="dictation-' + index + '" data-dictation-input="' + index + '" ' + language +
+    ' autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" maxlength="90" value="' + escapeHtml(value) + '"></label>';
+}
+
+function dictationRoundView() {
+  const round = currentDictation();
+  const feedback = dictationMode === 'practice' && round.feedback;
+  const index = round.rows.length - Number(!!feedback);
+  const [v1] = dictationVerbs[round.order[index]];
+  const title = dictationMode === 'practice' ? 'תרגול כל 20 הפעלים' : 'מבחן דמה';
+  return '<div class="narrow">' + header(title, 'הקלידי את שלושת החלקים לכל פועל.') + '<section class="paper">' +
+    '<div class="quiz-meta"><span>פועל ' + (index + 1) + ' מתוך ' + round.order.length + '</span></div>' +
+    '<progress aria-label="התקדמות בהכתבה" value="' + round.rows.length + '" max="' + round.order.length + '"></progress>' +
+    '<div class="action-row">' + action('🔊 להשמיע את הפועל', 'data-dictation-speak="' + v1 + '"', 'secondary') + '</div>' +
+    '<p id="dictation-audio-status" class="dictation-note" role="status"></p>' +
+    '<details class="hint"><summary>הצגת הפועל בכתב</summary><p>' + english(v1) + '</p></details>' +
+    (feedback ? '<div class="dictation-feedback" id="dictation-feedback" tabindex="-1">' + dictationReviewRow(round.rows[index], false) +
+      '<div class="action-row">' + action(round.rows.length === round.order.length ? 'לסיכום התרגול' : 'לפועל הבא', 'data-dictation-next') + '</div></div>'
+      : '<form class="form dictation-form" data-dictation-form>' + dictationFields.map((label, field) => dictationInput(label, field, round.draft[field])).join('') +
+        '<div class="action-row"><button class="action" type="submit">' + (dictationMode === 'practice' ? 'לבדוק תשובה' : round.rows.length + 1 === round.order.length ? 'לסיים את המבחן' : 'לפועל הבא') +
+        '</button>' + action('לדלג', 'data-dictation-skip', 'plain') + '</div>' +
+        '<p class="status" id="dictation-error" role="status"></p></form>') +
+    '<button type="button" class="link-button" data-nav="dictation">חזרה להכנה להכתבה</button></section></div>';
+}
+
+function meaningParts(value) {
+  return value.normalize('NFKC').replace(/[\u0591-\u05BD\u05BF-\u05C7]/gu, '').split(/[,/;|]/u)
+    .map(part => part.replace(/[^\p{L}\s]/gu, ' ').trim().replace(/\s+/gu, ' ')).filter(Boolean);
+}
+
+function gradeDictation(verb, answers) {
+  const [v1, v2, , meanings] = verb;
+  const base = answers[0].trim().toLowerCase();
+  const past = answers[1].trim().toLowerCase();
+  const bothPastForms = /^(?:was\s*(?:(?:\/|,|;|&|and)\s*|\s+)were|were\s*(?:(?:\/|,|;|&|and)\s*|\s+)was)$/u;
+  const writtenMeanings = meaningParts(answers[2]);
+  return [base === v1, v1 === 'be' ? bothPastForms.test(past) : past === v2,
+    writtenMeanings.length > 0 && writtenMeanings.every(meaning => meanings.includes(meaning))];
+}
+
+function submitDictation(skip = false) {
+  const round = currentDictation();
+  if (round.status !== 'running' || round.feedback) return;
+  const inputs = Array.from(main.querySelectorAll('[data-dictation-input]'));
+  const answers = skip ? [...round.draft] : inputs.map(field => field.value.trim());
+  if (!skip && answers.some(answer => !answer)) {
+    document.getElementById('dictation-error').textContent = 'מלאי את שלושת השדות, או בחרי לדלג.';
+    inputs[answers.findIndex(answer => !answer)].focus();
+    return;
+  }
+  const verbIndex = round.order[round.rows.length];
+  round.rows.push({ verbIndex, answers, marks: gradeDictation(dictationVerbs[verbIndex], answers) });
+  round.draft = ['', '', ''];
+  if (dictationMode === 'practice') {
+    round.feedback = true;
+    save();
+    render('#dictation-feedback');
+  } else {
+    advanceDictation();
+  }
+}
+
+function advanceDictation() {
+  const round = currentDictation();
+  round.feedback = false;
+  if (round.rows.length < round.order.length) {
+    save();
+    go('dictationRound');
+    return;
+  }
+  round.status = 'done';
+  if (dictationMode === 'test') {
+    const score = round.rows.filter(row => row.marks.every(Boolean)).length;
+    round.earned = 3 * Math.max(0, score - (data.dictation.best ?? 0));
+    data.dictation.best = Math.max(score, data.dictation.best ?? 0);
+    data.total += round.earned;
+    data.coins += round.earned;
+  }
+  save();
+  go('dictationResult');
+}
+
+function dictationReviewRow(row, collapsed) {
+  const verb = dictationVerbs[row.verbIndex];
+  const full = row.marks.every(Boolean);
+  const fields = '<dl class="dictation-review-fields">' + dictationFields.map((label, index) => {
+    const renderAnswer = value => index < 2 ? english(value) : escapeHtml(value);
+    return '<div><dt>' + english(label) + '</dt><dd><span class="' + (row.marks[index] ? 'dictation-right' : 'dictation-review-needed') + '">' +
+      (row.marks[index] ? '✓ נכון' : 'לחזרה') + '</span> · ' + (row.answers[index] ? renderAnswer(row.answers[index]) : 'ללא תשובה') +
+      (!row.marks[index] ? '<br>תשובה לדוגמה · ' + renderAnswer(verb[index]) : '') + '</dd></div>';
+  }).join('') + '</dl>';
+  if (!collapsed) return '<h2>' + (full ? 'כל שלושת החלקים נכונים!' : 'בואי נבדוק את שלושת החלקים') + '</h2>' + fields;
+  return '<details class="dictation-review"><summary>' + english(verb[0]) + ' · ' + (full ? '✓ 3/3' : row.marks.filter(Boolean).length + '/3') + '</summary>' + fields + '</details>';
+}
+
+function dictationResultView() {
+  const round = currentDictation();
+  const full = round.rows.filter(row => row.marks.every(Boolean)).length;
+  const fields = round.rows.reduce((count, row) => count + row.marks.filter(Boolean).length, 0);
+  const review = [...round.rows].sort((a, b) => Number(a.marks.every(Boolean)) - Number(b.marks.every(Boolean)));
+  const title = dictationMode === 'practice' ? 'תרגלת את כל 20 הפעלים!' : 'תוצאת מבחן הדמה';
+  const canShare = dictationMode === 'test' && full >= 6;
+  return '<div class="narrow">' + header(title, '') + '<section class="paper result"><h2>' + full + ' מתוך ' + round.order.length + ' פעלים מדויקים</h2>' +
+    '<p>' + fields + ' מתוך ' + (round.order.length * 3) + ' חלקים נכונים.</p>' +
+    (round.earned ? '<p>הרווחת <strong>' + round.earned + ' נקודות</strong> על השיפור בשיא.</p>' : '') +
+    '<div class="action-row">' + action('לחזור להכנה', 'data-nav="dictation"', 'secondary') +
+    (canShare ? action('לשתף את ההצלחה', 'data-dictation-share') + (data.phone ? action('לשלוח בוואטסאפ להורה', 'data-dictation-whatsapp', 'plain') : '') : '') +
+    '</div><p class="status" id="share-status" role="status"></p></section><section class="section paper"><h2>בדיקת תשובות</h2>' +
+    '<p class="muted dictation-note">אפשר לפתוח כל פועל ולראות את התשובה שלך לצד דוגמה.</p>' +
+    review.map(row => dictationReviewRow(row, true)).join('') + '</section></div>';
+}
+
+function speakDictation(word) {
+  const status = document.getElementById('dictation-audio-status');
+  const unavailable = 'ההשמעה לא זמינה בדפדפן הזה. אפשר להציג את הפועל בכתב.';
+  if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+    status.textContent = unavailable;
+    return;
+  }
+  status.textContent = '';
+  window.speechSynthesis.cancel();
+  const speech = new SpeechSynthesisUtterance(word === 'read' ? 'reed' : word);
+  speech.lang = 'en-US';
+  speech.rate = 0.85;
+  speech.onerror = event => {
+    if (!['canceled', 'interrupted'].includes(event.error)) status.textContent = unavailable;
+  };
+  window.speechSynthesis.speak(speech);
+}
+
+function dictationShareText() {
+  const full = currentDictation().rows.filter(row => row.marks.every(Boolean)).length;
+  return 'יש לי הישג ב־WordQuest! במבחן הדמה להכתבה כתבתי נכון את כל שלושת החלקים של ' + full + ' מתוך 10 פעלים. ✨';
+}
+
+document.addEventListener('input', event => {
+  if (!event.target.matches('[data-dictation-input]')) return;
+  currentDictation().draft[Number(event.target.dataset.dictationInput)] = event.target.value;
+  save();
+});
+
+document.addEventListener('click', event => {
+  const button = event.target.closest('button');
+  if (!button || button.disabled) return;
+  const flags = button.dataset;
+  if (flags.dictationStart) startDictation(flags.dictationStart);
+  else if (flags.dictationResult) {
+    dictationMode = flags.dictationResult;
+    go('dictationResult');
+  } else if (flags.dictationSpeak) speakDictation(flags.dictationSpeak);
+  else if ('dictationSkip' in flags) submitDictation(true);
+  else if ('dictationNext' in flags) advanceDictation();
+  else if ('dictationShare' in flags) void shareAchievement(dictationShareText());
+  else if ('dictationWhatsapp' in flags && data.phone) {
+    window.open('https://wa.me/' + data.phone + '?text=' + encodeURIComponent(dictationShareText()), '_blank', 'noopener,noreferrer');
+  }
+});
+</script>
   <script>const storageKey = 'wordquest-v1';
-const defaults = { name: '', phone: '', best: {}, total: 0, coins: 0, owned: [], equipped: '', round: null };
+const defaults = { name: '', phone: '', best: {}, total: 0, coins: 0, owned: [], equipped: '', round: null, dictation: { practice: null, test: null, best: null } };
 let data = { ...defaults };
 try {
   data = { ...defaults, ...JSON.parse(localStorage.getItem(storageKey) || '{}') };
@@ -408,7 +659,7 @@ function home() {
     '<section class="daily"><div class="daily-copy"><span class="eyebrow"><span aria-hidden="true">✦</span>' + (resume ? 'המשימה שלך פתוחה' : 'מומלץ בשבילך') + '</span>' +
     '<h2>' + lesson.title + '</h2><p>' + worlds[lesson.world].name + ' · ' + lesson.items.length + ' שאלות</p>' +
     action(resume ? 'להמשיך במשימה' : 'מתחילות לשחק', 'data-lesson="' + lesson.id + '"', 'luminous') +
-    '</div><div class="hero-art" aria-hidden="true"><div class="ring"></div><div class="ring second"></div><span class="spark one">✦</span><span class="spark two">✦</span><span class="spark three">✧</span><div class="keys"><span class="tile">A</span><span class="tile">✦</span><span class="tile">Z</span></div></div></section>' +
+    '</div><div class="hero-art" aria-hidden="true"><div class="ring"></div><div class="ring second"></div><span class="spark one">✦</span><span class="spark two">✦</span><span class="spark three">✧</span><div class="keys"><span class="tile">A</span><span class="tile">✦</span><span class="tile">Z</span></div></div></section>' + dictationShortcut() +
     '<section class="section"><div class="section-header"><h2>עולמות משחק</h2><button type="button" class="link-button" data-nav="learn">כל המשימות</button></div><div class="world-grid">' +
     Object.entries(worlds).map(([id, world]) => '<button type="button" class="world-card ' + world.theme + '" data-world="' + id + '"><span class="world-icon" aria-hidden="true">' + world.icon + '</span><h3>' + world.name + '</h3><span dir="ltr" lang="en">' + world.en + '</span></button>').join('') +
     '</div></section><section class="section"><div class="section-header"><h2>ההתקדמות שלי</h2></div>' + stats() + '</section>';
@@ -425,11 +676,11 @@ function learn() {
   const world = worlds[filter];
   if (world) {
     return '<div class="narrow"><button type="button" class="link-button arrowless" data-nav="learn">כל עולמות המשחק</button>' +
-      header(world.name, world.intro) + missionList(lessons.filter(lesson => lesson.world === filter)) + '</div>';
+      header(world.name, world.intro) + (filter === 'verbs' ? dictationShortcut() : '') + missionList(lessons.filter(lesson => lesson.world === filter)) + '</div>';
   }
   return header('משחקים', 'בחרי משימה קצרה והתחילי בקצב שלך.') + Object.entries(worlds).map(([id, info]) =>
     '<section class="world-block ' + info.theme + '"><h2><span class="world-icon" aria-hidden="true">' + info.icon +
-    '</span>' + info.name + '</h2>' + missionList(lessons.filter(lesson => lesson.world === id)) + '</section>').join('');
+    '</span>' + info.name + '</h2>' + (id === 'verbs' ? dictationShortcut() : '') + missionList(lessons.filter(lesson => lesson.world === id)) + '</section>').join('');
 }
 
 function passage(lesson, collapsible) {
@@ -489,6 +740,8 @@ function finishView() {
 
 function progressView() {
   return header('ההתקדמות שלי', 'כל שיפור קטן מצטבר.') + stats() +
+    (data.dictation.best === null ? '' : '<section class="section paper"><div class="section-header"><h2>מבחן ההכתבה</h2>' +
+      action('לתרגל שוב', 'data-nav="dictation"', 'secondary') + '</div><p>השיא שלי: ' + data.dictation.best + ' מתוך 10 פעלים מלאים.</p></section>') +
     '<section class="section paper"><div class="section-header"><h2>שיאים אישיים</h2></div>' +
     (Object.keys(data.best).length ? '<div class="mission-list">' + lessons.filter(lesson => data.best[lesson.id] !== undefined).map(lesson =>
       '<button type="button" class="mission" data-lesson="' + lesson.id + '"><span>' + lesson.title + '</span><small>' +
@@ -517,14 +770,15 @@ function settings() {
     '<button class="action" type="submit">לשמור</button><p class="status" id="settings-status" role="status"></p></form></div>';
 }
 
-const views = {home, learn, briefing, quiz, result: finishView, progress: progressView, rewards, settings};
+const views = {home, learn, briefing, quiz, result: finishView, progress: progressView, rewards, settings,
+  dictation: dictationHub, dictationRound: dictationRoundView, dictationResult: dictationResultView};
 
 function render(focus = '') {
   const openStory = !!main.querySelector('[data-passage][open]');
   document.getElementById('balance').textContent = data.coins;
   document.getElementById('avatar').textContent = prizes.find(prize => prize.id === data.equipped)?.icon || '🎧';
   document.querySelectorAll('.navigation button').forEach(button => {
-    const selected = button.dataset.nav === page || (['briefing', 'quiz', 'result'].includes(page) && button.dataset.nav === 'learn');
+    const selected = button.dataset.nav === page || (['briefing', 'quiz', 'result', 'dictation', 'dictationRound', 'dictationResult'].includes(page) && button.dataset.nav === 'learn');
     if (selected) button.setAttribute('aria-current', 'page');
     else button.removeAttribute('aria-current');
   });
@@ -631,7 +885,10 @@ function shareText() {
 }
 
 async function share() {
-  const message = shareText();
+  await shareAchievement(shareText());
+}
+
+async function shareAchievement(message) {
   const status = document.getElementById('share-status');
   try {
     if (navigator.share) {
@@ -671,6 +928,11 @@ document.addEventListener('click', event => {
 });
 
 main.addEventListener('submit', event => {
+  if (event.target.matches('[data-dictation-form]')) {
+    event.preventDefault();
+    submitDictation();
+    return;
+  }
   if (page !== 'settings') return;
   event.preventDefault();
   const phoneField = document.getElementById('phone');
